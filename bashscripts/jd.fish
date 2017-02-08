@@ -32,7 +32,7 @@ function _findDirs
             set direcs (ls -AR 2>/dev/null | grep ':$' | sed -e 's/\(.*\)./\1/' -e 's/..\(.*\)/\1/')
 
         else
-            if test $depth -gt 4
+            if test "$depth" -gt 4
                 set direcs (ls -AR 2>/dev/null | grep ':$' | sed -e 's/\(.*\)./\1/' -e 's/..\(.*\)/\1/' | cut -d/ -f-$depth | uniq)
             else
                 set direcs (find -maxdepth "$depth" -type d 2>/dev/null | sed -e 's/..\(.*\)/\1/')
@@ -53,7 +53,7 @@ function _findDirs
     set relevantDirs (printf "%s\n" $direcs | grep -i "$query")
     set numElements (echo "$relevantDirs" | wc -w )
 
-    if test $relevantDirs[1] -eq "$query"
+    if test "$relevantDirs[1]" -eq "$query"
 
         echo $query
 
@@ -66,7 +66,7 @@ function _findDirs
         return
     end
 
-    if test $numElements -gt 0
+    if test "$numElements" -gt 0
         echo
 
         if [ $fType = "f" ]
@@ -81,13 +81,14 @@ end
 
 function jd
     set insensitive -i
+    set depth ""
 
     getopts $argv | while read -l key value
         switch $key
             case d
                 set depth $value
             case f
-                _findDirs "$value" "f" "$depth"
+                _findDirs $value "f" $depth
                 return
             case t
                 set -e insensitive
