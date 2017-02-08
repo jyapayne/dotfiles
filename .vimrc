@@ -1,6 +1,3 @@
-" this is necessary to get the "indent paragraph" command to work
-"
-
 set autoindent
 set ruler
 
@@ -13,9 +10,12 @@ set expandtab
 set nocompatible
 set foldmethod=indent
 set foldlevel=99
-let g:python_highlight_all=1
+let g:pydiction_location='/home/joey/.vim/bundle/pydiction/complete-dict'
 let g:python_version_2 = 1
-map <C-n> :NERDTreeTabsToggle<CR>
+let g:jsx_ext_required = 0
+let g:asyncrun_auto = "make"
+let g:syntastic_enable_elixir_checker = 1
+let g:syntastic_elixir_checkers = ['elixir']
 
 set undofile                " Save undo's after file closes
 set undodir=$HOME/.vim/undo " where to save undo histories
@@ -34,8 +34,15 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_check_on_wq = 0
+let g:python_highlight_space_errors = 0
 
+map <C-n> :NERDTreeTabsToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
 autocmd Filetype nim setlocal ts=2 sts=2 sw=2 expandtab
+
+autocmd BufNew * if winnr('$') == 1 | tabmove99 | endif
 
 set hlsearch
 highlight Search ctermbg=blue ctermfg=white guibg=blue
@@ -80,6 +87,13 @@ nmap <F8> :TagbarToggle<CR>
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
 
+" Bubble single lines
+nmap <C-Up> [e
+nmap <C-Down> ]e
+" Bubble multiple lines
+vmap <C-Up> [egv
+vmap <C-Down> ]egv
+
 vnoremap # :s#^#\##<cr>
 vnoremap -# :s#^\###<cr>
 
@@ -101,6 +115,8 @@ vnoremap <leader>p "_dP
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_min_num_of_chars_for_completion = 99
 
+command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
+
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
@@ -113,10 +129,12 @@ set nocompatible
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-Plugin 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.vim'
 Plugin 'zah/nim.vim'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-unimpaired'
 Plugin 'vim-syntastic/syntastic'
+Plugin 'scrooloose/nerdtree'
 Plugin 'hynek/vim-python-pep8-indent'
 Plugin 'pangloss/vim-javascript'
 Plugin 'Glench/Vim-Jinja2-Syntax'
@@ -124,8 +142,13 @@ Plugin 'tpope/vim-haml'
 Plugin 'hdima/python-syntax'
 Plugin 'hail2u/vim-css3-syntax'
 Plugin 'mxw/vim-jsx'
-Plugin 'elixir-lang/vim-elixir'
-Plugin 'scrooloose/nerdtree'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'jistr/vim-nerdtree-tabs'
-call vundle#end()            " required
+Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'skywind3000/asyncrun.vim'
+Plugin 'mh21/errormarker.vim'
+Plugin 'elixir-lang/vim-elixir'
+Plugin 'dag/vim-fish'
+call vundle#end()
 filetype plugin indent on
