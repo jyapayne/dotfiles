@@ -88,7 +88,7 @@ function jd
             case d
                 set depth $value
             case f
-                _findDirs $value "f" $depth
+                _findDirs $value "f" ""
                 return
             case t
                 set -e insensitive
@@ -105,7 +105,7 @@ function jd
                 _jdhelp
                 return
             case '*'
-                _findDirs $argv[1] "d" $argv[2]
+                _findDirs $argv[1] "d" ""
                 return
         end
     end
