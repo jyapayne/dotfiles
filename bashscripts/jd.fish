@@ -99,7 +99,8 @@ function jd
                      --exclude-dir="dist" \
                      --exclude-dir="node_modules" --include="*$suffix" \
                      -r -n $insensitive "$value" * | \
-                     sed -e "s/:/ +/" | sed -e "s/:/ --/" | sed -e "s/^/vim /"
+                     sed -e "s/:/ +/" | sed -e "s/:/ --/" | \
+                     sed -e "s/^/vim /" | sed -e "s/\s\+/ /g"
                 return
             case h
                 _jdhelp
@@ -114,6 +115,10 @@ end
 
 function read_prompt
     echo "Which window would you like to go to? (Enter a number or q to quit) "
+end
+
+function gitp
+    git log --oneline --graph --decorate
 end
 
 function gt

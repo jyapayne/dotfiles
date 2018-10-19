@@ -119,11 +119,3 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 #export SDKMAN_DIR="/home/joey/.sdkman"
 #[[ -s "/home/joey/.sdkman/bin/sdkman-init.sh" ]] && source "/home/joey/.sdkman/bin/sdkman-init.sh"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/joey/cloudsdk/google-cloud-sdk/path.bash.inc' ]; then source '/home/joey/cloudsdk/google-cloud-sdk/path.bash.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/joey/cloudsdk/google-cloud-sdk/completion.bash.inc' ]; then source '/home/joey/cloudsdk/google-cloud-sdk/completion.bash.inc'; fi
-
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/Documents/Keys/Test Cloud TTS-28e661a83ec0.json"

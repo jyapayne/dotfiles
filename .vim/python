@@ -26,8 +26,6 @@ inoremap <Nul> <C-x><C-o>
 set formatoptions=cq textwidth=72 foldignore= wildignore+=*.py[co]
 
 " Highlight end of line whitespace.
-highlight WhitespaceEOL ctermbg=red guibg=red
-match WhitespaceEOL /\s\+$/
 
 " The next two highlight matches break the previous one, I don't know why.
 " Show long lines.
@@ -39,7 +37,7 @@ match WhitespaceEOL /\s\+$/
 
 " `gf` jumps to the filename under the cursor.  Point at an import statement
 " and jump to it!
-python << EOF
+python3 << EOF
 import os
 import sys
 import vim
@@ -59,7 +57,7 @@ set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
 " Execute a selection of code (very cool!)
 " Use VISUAL to select a range and then hit ctrl-h to execute it.
-python << EOL
+python3 << EOL
 import vim
 def EvaluateCurrentRange():
     eval(compile('\n'.join(vim.current.range),'','exec'),globals())
@@ -68,7 +66,7 @@ map <C-h> :py EvaluateCurrentRange()
 
 " Use F7/Shift-F7 to add/remove a breakpoint (pdb.set_trace)
 " Totally cool.
-python << EOF
+python3 << EOF
 def SetBreakpoint():
     import re
     nLine = int( vim.eval( 'line(".")'))

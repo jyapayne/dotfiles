@@ -1,0 +1,7 @@
+[user]
+	email = jyapayne@gmail.com
+	name = Joey Payne
+[core]
+	editor = vim
+[color]
+	ui = auto
