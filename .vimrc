@@ -172,7 +172,7 @@ endf
 nn <C-g> :call JumpToDef()<cr>
 ino <C-g> <esc>:call JumpToDef()<cr>i
 
-nmap <C-a> :MerlinTypeOf<cr>
+nmap <C-t> :MerlinTypeOf<cr>
 
 " replace currently selected text with default register
 " without yanking it
@@ -243,6 +243,7 @@ Plug 'kien/ctrlp.vim'
 Plug 'udalov/kotlin-vim'
 Plug 'ervandew/supertab'
 Plug 'simnalamburt/vim-mundo'
+Plug 'christoomey/vim-tmux-navigator'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
 

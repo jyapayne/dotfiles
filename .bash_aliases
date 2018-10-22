@@ -22,7 +22,6 @@ alias ls="ls -h --color=auto"
 export CC=gcc
 export CXX=g++
 alias did="vim +'normal Go' +'r!date' ~/Documents/did.txt"
-xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 
 alias lcat='pygmentize -g -O style=colorful,linenos=1 | grep -P "^\d\d\d\d:"'
 alias ccat='pygmentize -g'
