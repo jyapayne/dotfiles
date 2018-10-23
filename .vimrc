@@ -19,6 +19,8 @@ augroup Binary
 augroup END
 
 
+set wildmenu
+set wildmode=full
 set shell=/bin/bash\ --login
 set smartindent
 set ruler
@@ -157,6 +159,14 @@ nmap <C-Down> ]e
 vmap <C-Up> [egv
 vmap <C-Down> ]egv
 
+" make escape key not delay
+set timeoutlen=1000 ttimeoutlen=0
+
+" nmap <C-k> [e
+" nmap <C-j> ]e
+vmap <C-k> [egv
+vmap <C-j> ]egv
+
 vnoremap # :s#^#\##<cr>
 vnoremap -# :s#^\###<cr>
 
@@ -172,7 +182,7 @@ endf
 nn <C-g> :call JumpToDef()<cr>
 ino <C-g> <esc>:call JumpToDef()<cr>i
 
-nmap <C-t> :MerlinTypeOf<cr>
+autocmd FileType ocaml nmap <C-t> :MerlinTypeOf<cr>
 
 " replace currently selected text with default register
 " without yanking it
@@ -198,6 +208,22 @@ let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 execute "set rtp+=" . g:opamshare . "/merlin/vim"
 
 au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
+
+execute "set <A-h>=h"
+execute "set <A-j>=j"
+execute "set <A-k>=k"
+execute "set <A-l>=l"
+
+noremap <A-k> :tabr<cr>
+noremap <A-j> :tabl<cr>
+noremap <A-h> gT
+noremap <A-l> gt
+
+inoremap <A-k> <Esc>:tabr<cr>i
+inoremap <A-j> <Esc>:tabl<cr>i
+inoremap <A-h> <Esc>gTi
+inoremap <A-l> <Esc>gti
+
 
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
