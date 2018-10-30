@@ -1,5 +1,12 @@
 .pythonhistory
 .python_history
+.vim/session
+.vim_session
+.viminfo
+.pylint.d
+.tmux/plugins
+.vim/plugged
+.tmux/resurrect
 .bash_history
 .vim/undo
 # Swap

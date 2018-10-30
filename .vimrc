@@ -3,6 +3,8 @@ map <ESC>[1;5B <C-Down>
 map <ESC>[1;5C <C-Right>
 map <ESC>[1;5D <C-Left>
 
+let mapleader = "\<Space>"
+
 let g:syntastic_c_compiler_options = "-std=c99"
 
 inoremap vmark ✓
@@ -17,7 +19,6 @@ augroup Binary
   au BufWritePost *.bin if &bin | %!xxd
   au BufWritePost *.bin set nomod | endif
 augroup END
-
 
 set wildmenu
 set wildmode=full
