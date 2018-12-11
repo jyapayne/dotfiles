@@ -2,9 +2,11 @@ export PATH=/usr/lib/dart/bin:$HOME/.local/bin:/snap/bin:/usr/local/gradle/gradl
 export PATH=$PATH:$HOME/yuzu/:$HOME/Nim/bin:$HOME/.nimble/bin:$HOME/nimlibs
 export PATH=$PATH:$HOME/gcclibs/aarch64-linux-gnu/bin:$HOME/gcclibs/arm-linux-gnueabi/bin
 export PATH=$HOME/.pub-cache/bin:$PATH
-export GOROOT=/usr/local/go
+export PATH=$PATH:$HOME/flutter/bin
+export GOROOT=/usr/lib/go-1.11/
+export GOPATH=$HOME/go
 export GOBIN=$GOROOT/bin
-export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$GOBIN
 export DEVKITPRO=/opt/devkitpro
 export DEVKITARM=${DEVKITPRO}/devkitARM
 export DEVKITA64=${DEVKITPRO}/devkitA64
@@ -26,6 +28,7 @@ alias did="vim +'normal Go' +'r!date' ~/Documents/did.txt"
 alias lcat='pygmentize -g -O style=colorful,linenos=1 | grep -P "^\d\d\d\d:"'
 alias ccat='pygmentize -g'
 alias hcat='highlight -n -O ansi --force'
+alias tcat='highlight -O ansi --force'
 
 alias dc="docker-compose"
 
@@ -70,3 +73,4 @@ export TERM=screen-256color
 export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 . $HOME/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 . /home/joey/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+

@@ -271,6 +271,7 @@ Plug 'udalov/kotlin-vim'
 Plug 'ervandew/supertab'
 Plug 'simnalamburt/vim-mundo'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'tpope/vim-surround'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
 

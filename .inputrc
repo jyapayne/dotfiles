@@ -1,4 +1,10 @@
+$include /etc/inputrc
 "\ek": previous-history
 "\ej": next-history
 "\eh": backward-char
 "\el": forward-char
+
+"\ew": forward-word
+"\eb": backward-word
+
+"\ep": quoted-insert
