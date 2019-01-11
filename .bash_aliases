@@ -1,12 +1,12 @@
 export PATH=/usr/lib/dart/bin:$HOME/.local/bin:/snap/bin:/usr/local/gradle/gradle-4.6/bin:/usr/local/kotlinc/bin:/usr/local/android-studio/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin:/usr/sbin:/local/bin:/usr/local/bin:/sbin:/usr/games:/opt/android-sdk/platform-tools:/opt/android-sdk/tools:/opt/android-sdk
 export PATH=$PATH:$HOME/yuzu/:$HOME/Nim/bin:$HOME/.nimble/bin:$HOME/nimlibs
 export PATH=$PATH:$HOME/gcclibs/aarch64-linux-gnu/bin:$HOME/gcclibs/arm-linux-gnueabi/bin
-export PATH=$HOME/.pub-cache/bin:$PATH
-export PATH=$PATH:$HOME/flutter/bin
-export GOROOT=/usr/lib/go-1.11/
-export GOPATH=$HOME/go
+export PATH=$HOME/android-studio/bin:$HOME/.pub-cache/bin:$HOME/flutter/bin:$PATH
+export LD_LIBRARY_PATH=$HOME/Qt/5.12.0/gcc_64/lib:$LD_LIBRARY_PATH
+export GOROOT=/usr/local/go
 export GOBIN=$GOROOT/bin
-export PATH=$PATH:$GOBIN
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:/usr/local/go/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 export DEVKITPRO=/opt/devkitpro
 export DEVKITARM=${DEVKITPRO}/devkitARM
 export DEVKITA64=${DEVKITPRO}/devkitA64
@@ -28,7 +28,6 @@ alias did="vim +'normal Go' +'r!date' ~/Documents/did.txt"
 alias lcat='pygmentize -g -O style=colorful,linenos=1 | grep -P "^\d\d\d\d:"'
 alias ccat='pygmentize -g'
 alias hcat='highlight -n -O ansi --force'
-alias tcat='highlight -O ansi --force'
 
 alias dc="docker-compose"
 
@@ -73,4 +72,3 @@ export TERM=screen-256color
 export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 . $HOME/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 . /home/joey/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
-
