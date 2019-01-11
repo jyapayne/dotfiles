@@ -70,6 +70,7 @@ jd(){
         s)
             grep --color=always --exclude-dir=".webassets-cache" \
                  --exclude-dir="dist" \
+                 --exclude-dir=".git" \
                  --exclude-dir="node_modules" --include="*$suffix" \
                  -r -n $insensitive "$OPTARG"  * | \
                  sed -e "s/:/ +/" | sed -e "s/:/ --/" | sed -e "s/^/vim /"
