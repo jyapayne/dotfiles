@@ -59,9 +59,10 @@ set undoreload=10000        " number of lines to save for undo
 filetype plugin indent on
 set pastetoggle=<F2>
 set incsearch
-set title
+set guicursor=
 
-set ttymouse=xterm2
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 0
+
 set mouse=a
 set tabstop=4
 set shiftwidth=4
@@ -205,16 +206,6 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
     \ }
 
-set rtp^="/home/joey/.opam/4.05.0/share/ocp-indent/vim"
-let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
-
-au FileType ocaml call SuperTabSetDefaultCompletionType("<c-x><c-o>")
-
-execute "set <A-h>=h"
-execute "set <A-j>=j"
-execute "set <A-k>=k"
-execute "set <A-l>=l"
 
 noremap <A-k> :tabr<cr>
 noremap <A-j> :tabl<cr>
@@ -235,7 +226,7 @@ inoremap <A-l> <Esc>gti
 "let g:syntastic_auto_loc_list = 1
 "let g:syntastic_check_on_wq = 0
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
 Plug 'zah/nim.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
@@ -264,16 +255,19 @@ Plug 'vim-airline/vim-airline-themes'
 "Plug 'itchyny/lightline.vim'
 Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-commentary'
-Plug 'chriskempson/base16-vim'
 Plug 'w0rp/ale'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'udalov/kotlin-vim'
 Plug 'ervandew/supertab'
 Plug 'simnalamburt/vim-mundo'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'dart-lang/dart-vim-plugin'
+Plug 'tpope/vim-surround'
+Plug 'rakr/vim-one'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
+
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+set termguicolors
 
 nnoremap <F6> :MundoToggle<CR>
 
@@ -281,42 +275,11 @@ nnoremap <F6> :MundoToggle<CR>
 " set background=dark
 "colorscheme base16-default-dark
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+let g:airline_theme='one'
+set background=dark
+colorscheme one
 
-let s:opam_configuration = {}
-
-function! OpamConfOcpIndent()
-  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
-
-function! OpamConfOcpIndex()
-  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
-
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
-
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-for tool in s:opam_packages
-  " Respect package order (merlin should be after ocp-index)
-  if count(s:opam_available_tools, tool) > 0
-    call s:opam_configuration[tool]()
-  endif
-endfor
-" ## end of OPAM user-setup addition for vim / base ## keep this line
-autocmd Filetype ocaml setlocal ts=2 sts=2 sw=2 expandtab
-
-"colorscheme tender
-
-hi Normal ctermbg=none
-hi NonText ctermbg=none
+hi Normal ctermbg=none guibg=none
+hi NonText ctermbg=none guibg=none
 hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE
 set noshowmode

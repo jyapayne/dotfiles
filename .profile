@@ -26,3 +26,5 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 #xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+
+export PATH="$HOME/.cargo/bin:$PATH"
