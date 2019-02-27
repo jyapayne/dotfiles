@@ -398,7 +398,7 @@ filetype on
 :autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-highlight OverLength ctermbg=red ctermfg=black guibg=#592929
+highlight OverLength ctermbg=red ctermfg=black guibg=#592929 gui=bold
 
 highlight ALEError ctermfg=black ctermbg=red guifg=black guibg=red
 highlight ALEErrorSign ctermfg=none ctermbg=black guifg=red guibg=#212121
