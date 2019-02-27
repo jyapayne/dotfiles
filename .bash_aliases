@@ -23,11 +23,13 @@ export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
 alias ls="ls -h --color=auto"
 export CC=gcc
 export CXX=g++
+alias nv="nvim"
 alias did="vim +'normal Go' +'r!date' ~/Documents/did.txt"
 
 alias lcat='pygmentize -g -O style=colorful,linenos=1 | grep -P "^\d\d\d\d:"'
 alias ccat='pygmentize -g'
 alias hcat='highlight -n -O ansi --force'
+alias tcat='highlight -O ansi --force'
 
 alias dc="docker-compose"
 

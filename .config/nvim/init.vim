@@ -109,20 +109,9 @@ function! ToggleJSFormat(...)
 endfunction
 
 map <F9> :call ToggleJSFormat(1)<CR>
-call ToggleJSFormat()
+"call ToggleJSFormat()
 
 " autocmd BufNew * if winnr('$') == 1 | tabmove99 | endif
-
-set hlsearch
-highlight Search ctermbg=blue ctermfg=white guibg=blue
-
-filetype on
-:autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-
-highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-highlight OverLength ctermbg=red ctermfg=black guibg=darkred
-
-highlight ALEError ctermfg=black ctermbg=red guifg=black guibg=red
 
 au! FileType python setl nosmartindent
 au BufRead,BufNewFile *.py,*.js,*.jsx,*.nim,*.ml,*.mli match OverLength /\%89v.\+/
@@ -133,6 +122,9 @@ syntax on
 command C let @/=""
 command CC :%s#_\(\l\)#\u\1#g
 command U :%s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
+
+map <Leader>y "*y
+map <Leader>p "*p
 
 nmap =j :%!python -m json.tool<CR>
 
@@ -262,7 +254,8 @@ Plug 'ervandew/supertab'
 Plug 'simnalamburt/vim-mundo'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-surround'
-Plug 'rakr/vim-one'
+Plug 'alaviss/nim.nvim'
+Plug 'prabirshrestha/asyncomplete.vim'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
 
@@ -270,16 +263,156 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 
 nnoremap <F6> :MundoToggle<CR>
+nnoremap riW ciW<C-r>0<ESC>
+nnoremap riw ciw<C-r>0<ESC>
 
 "let base16colorspace=256
 " set background=dark
 "colorscheme base16-default-dark
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let g:airline_theme='one'
+"let g:airline_theme='one'
 set background=dark
-colorscheme one
+syntax enable
+"colorscheme one
+"let ayucolor="dark"   " for dark version of theme
+"colorscheme ayu
+
+" Vim color file
+" vimdefault
+" Created by Joey with ThemeCreator (https://github.com/mswift42/themecreator)
+
+
+if exists("syntax on")
+syntax reset
+endif
+
+set t_Co=256
+let g:colors_name = "vimdefault"
+
+
+" Define reusable colorvariables.
+let s:bg="#000000"
+let s:fg="#ffffff"
+let s:fg2="#ebebeb"
+let s:fg3="#d6d6d6"
+let s:fg4="#c2c2c2"
+let s:bg2="#141414"
+let s:bg3="#292929"
+let s:bg4="#3d3d3d"
+let s:keyword="#a65a00"
+let s:builtin="#10a500"
+let s:const= "#CC0000"
+let s:comment="#2d64a4"
+let s:func="#00a0e2"
+let s:str="#C40000"
+let s:type="#3B9B00"
+let s:ident="#06989A"
+let s:preproc="#75507B"
+let s:var="#ffffff"
+let s:warning="#e81050"
+let s:warning2="#e86310"
+let s:parenbg="#3a71c9"
+
+exe 'hi Normal guifg='s:fg' guibg='s:bg
+exe 'hi Cursor guifg='s:bg' guibg='s:fg
+exe 'hi CursorLine  guibg='s:bg2
+exe 'hi CursorColumn  guibg='s:bg2
+exe 'hi ColorColumn  guibg='s:bg2
+exe 'hi LineNr guifg='s:fg2' guibg='s:bg2
+exe 'hi VertSplit guifg='s:fg3' guibg='s:bg3
+exe 'hi MatchParen guifg='s:fg' guibg='s:parenbg'  gui=none'
+exe 'hi Pmenu guifg='s:fg' guibg='s:bg2
+exe 'hi PmenuSel  guibg='s:bg3
+exe 'hi IncSearch guifg='s:bg' guibg='s:keyword
+exe 'hi Directory guifg='s:const
+exe 'hi Folded guifg='s:fg4' guibg='s:bg
+
+exe 'hi Boolean guifg='s:const
+exe 'hi Character guifg='s:const
+exe 'hi Comment guifg='s:comment
+exe 'hi Conditional guifg='s:keyword
+exe 'hi Constant guifg='s:const
+exe 'hi Define guifg='s:keyword
+exe 'hi DiffAdd guifg=#000000 guibg=#ddffdd gui=bold'
+exe 'hi DiffDelete guifg=#ff0000'
+exe 'hi DiffChange  guibg='s:bg2
+exe 'hi DiffText guifg=#000000 guibg=#ddddff gui=bold'
+exe 'hi ErrorMsg guifg='s:warning' guibg='s:bg2' gui=bold'
+exe 'hi WarningMsg guifg='s:fg' guibg='s:warning2
+exe 'hi Float guifg='s:const
+exe 'hi Function guifg='s:func
+exe 'hi Identifier guifg='s:ident'  gui=italic'
+exe 'hi Keyword guifg='s:keyword'  gui=bold'
+exe 'hi Label guifg='s:var
+exe 'hi NonText guifg='s:bg4' guibg='s:bg2
+exe 'hi Number guifg='s:const
+exe 'hi Operater guifg='s:keyword
+exe 'hi PreProc guifg='s:preproc
+exe 'hi Special guifg='s:preproc
+exe 'hi SpecialKey guifg='s:fg2' guibg='s:bg2
+exe 'hi Statement guifg='s:keyword
+exe 'hi StorageClass guifg='s:type'  gui=italic'
+exe 'hi String guifg='s:str
+exe 'hi Tag guifg='s:keyword
+exe 'hi Title guifg='s:fg'  gui=bold'
+exe 'hi Todo guifg='s:fg2'  gui=inverse,bold'
+exe 'hi Type guifg='s:type' gui=none'
+exe 'hi Underlined   gui=underline'
+
+" Ruby Highlighting
+exe 'hi rubyAttribute guifg='s:builtin
+exe 'hi rubyLocalVariableOrMethod guifg='s:var
+exe 'hi rubyGlobalVariable guifg='s:var' gui=italic'
+exe 'hi rubyInstanceVariable guifg='s:var
+exe 'hi rubyKeyword guifg='s:keyword
+exe 'hi rubyKeywordAsMethod guifg='s:keyword' gui=bold'
+exe 'hi rubyClassDeclaration guifg='s:keyword' gui=bold'
+exe 'hi rubyClass guifg='s:keyword' gui=bold'
+exe 'hi rubyNumber guifg='s:const
+
+" Python Highlighting
+exe 'hi pythonBuiltinFunc guifg='s:builtin
+
+" Go Highlighting
+exe 'hi goBuiltins guifg='s:builtin
+
+" Javascript Highlighting
+exe 'hi jsBuiltins guifg='s:builtin
+exe 'hi jsFunction guifg='s:keyword' gui=bold'
+exe 'hi jsGlobalObjects guifg='s:type
+exe 'hi jsAssignmentExps guifg='s:var
+
+" Html Highlighting
+exe 'hi htmlLink guifg='s:var' gui=underline'
+exe 'hi htmlStatement guifg='s:keyword
+exe 'hi htmlSpecialTagName guifg='s:keyword
+
+" Markdown Highlighting
+exe 'hi mkdCode guifg='s:builtin
+
+set hlsearch
+highlight Search ctermbg=blue ctermfg=white guibg=#006891 guifg=white
+highlight IncSearch ctermbg=blue ctermfg=white guifg=#7D008D guibg=white
+
+filetype on
+:autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+
+highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+highlight OverLength ctermbg=red ctermfg=black guibg=#592929
+
+highlight ALEError ctermfg=black ctermbg=red guifg=black guibg=red
+highlight ALEErrorSign ctermfg=none ctermbg=black guifg=red guibg=#212121
+highlight ALEWarning ctermfg=black ctermbg=yellow guifg=black guibg=#a09500
+highlight ALEWarningSign ctermfg=yellow ctermbg=none guibg=#212121 guifg=#a09500
+highlight SignColumn ctermbg=darkgrey guibg=#212121
 
 hi Normal ctermbg=none guibg=none
 hi NonText ctermbg=none guibg=none
-hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE
+hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE guibg=black gui=NONE guifg=NONE
 set noshowmode
+
+au User asyncomplete_setup call asyncomplete#register_source({
+    \ 'name': 'nim',
+    \ 'whitelist': ['nim'],
+    \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
+    \ })

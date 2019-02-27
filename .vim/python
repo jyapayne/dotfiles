@@ -48,21 +48,12 @@ EOF
 
 " Generate tags with: ctags -R -f ~/.vim/tags/python24.ctags /usr/lib/python2.4/
 " ctrl-[ to go to the tag under the cursor, ctrl-T to go back.
-set tags+=$HOME/.vim/tags/python24.ctags
+set tags+=$HOME/.vim/tags/python27.ctags
 
 " Use :make to see syntax errors. (:cn and :cp to move around, :dist to see
 " all errors)
 set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\"
 set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
-
-" Execute a selection of code (very cool!)
-" Use VISUAL to select a range and then hit ctrl-h to execute it.
-python3 << EOL
-import vim
-def EvaluateCurrentRange():
-    eval(compile('\n'.join(vim.current.range),'','exec'),globals())
-EOL
-map <C-h> :py EvaluateCurrentRange()
 
 " Use F7/Shift-F7 to add/remove a breakpoint (pdb.set_trace)
 " Totally cool.

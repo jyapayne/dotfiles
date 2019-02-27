@@ -51,6 +51,8 @@ let g:airline_powerline_fonts = 1
 let g:airline_section_x = ''
 let g:airline_section_y = ''
 
+nnoremap riW ciW<C-r>0<ESC>
+nnoremap riw ciw<C-r>0<ESC>
 
 set undofile                " Save undo's after file closes
 set undodir=$HOME/.vim/undo " where to save undo histories
@@ -226,6 +228,8 @@ inoremap <A-j> <Esc>:tabl<cr>i
 inoremap <A-h> <Esc>gTi
 inoremap <A-l> <Esc>gti
 
+map <Leader>y "*y
+map <Leader>p "*p
 
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
@@ -271,7 +275,7 @@ Plug 'udalov/kotlin-vim'
 Plug 'ervandew/supertab'
 Plug 'simnalamburt/vim-mundo'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'dart-lang/dart-vim-plugin'
+Plug 'tpope/vim-surround'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
 
