@@ -312,6 +312,7 @@ let s:var="#ffffff"
 let s:warning="#e81050"
 let s:warning2="#e86310"
 let s:parenbg="#3a71c9"
+let s:todo="yellow"
 
 exe 'hi Normal guifg='s:fg' guibg='s:bg
 exe 'hi Cursor guifg='s:bg' guibg='s:fg
@@ -355,7 +356,7 @@ exe 'hi StorageClass guifg='s:type'  gui=italic'
 exe 'hi String guifg='s:str
 exe 'hi Tag guifg='s:keyword
 exe 'hi Title guifg='s:fg'  gui=bold'
-exe 'hi Todo guifg='s:fg2'  gui=inverse,bold'
+exe 'hi Todo guibg='s:todo' guifg=black  gui=bold'
 exe 'hi Type guifg='s:type' gui=none'
 exe 'hi Underlined   gui=underline'
 
@@ -405,6 +406,9 @@ highlight ALEErrorSign ctermfg=none ctermbg=black guifg=red guibg=#212121
 highlight ALEWarning ctermfg=black ctermbg=yellow guifg=black guibg=#a09500
 highlight ALEWarningSign ctermfg=yellow ctermbg=none guibg=#212121 guifg=#a09500
 highlight SignColumn ctermbg=darkgrey guibg=#212121
+highlight TabLineFill guibg=none guifg=none gui=none
+highlight TabLineSel guibg=#353535 guifg=none
+highlight TabLine guibg=none guifg=none
 
 hi Normal ctermbg=none guibg=none
 hi NonText ctermbg=none guibg=none
