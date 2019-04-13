@@ -3,10 +3,16 @@ map <ESC>[1;5B <C-Down>
 map <ESC>[1;5C <C-Right>
 map <ESC>[1;5D <C-Left>
 
+" Live updating substitution!
+set inccommand=nosplit
+set number relativenumber
+let g:airline#extensions#ale#enabled = 1
+
 let mapleader = "\<Space>"
 let maplocalleader = "\<Space>"
 
 let g:syntastic_c_compiler_options = "-std=c99"
+set guicursor=
 
 inoremap vmark ✓
 
@@ -256,6 +262,14 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-surround'
 Plug 'alaviss/nim.nvim'
 Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'tpope/vim-repeat'
+Plug 'christoomey/vim-sort-motion'
+Plug 'christoomey/vim-system-copy'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-line'
+Plug 'Julian/vim-textobj-brace'
+Plug 'bps/vim-textobj-python'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
 
