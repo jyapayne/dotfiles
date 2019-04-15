@@ -24,7 +24,8 @@ alias ls="ls -h --color=auto"
 export CC=gcc
 export CXX=g++
 alias nv="nvim"
-alias did="vim +'normal Go' +'r!date' ~/Documents/did.txt"
+alias vim="nvim"
+alias did="nvim +'normal Go' +'r!date' ~/Documents/did.txt"
 
 alias lcat='pygmentize -g -O style=colorful,linenos=1 | grep -P "^\d\d\d\d:"'
 alias ccat='pygmentize -g'

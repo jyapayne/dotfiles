@@ -2,6 +2,7 @@ map <ESC>[1;5A <C-Up>
 map <ESC>[1;5B <C-Down>
 map <ESC>[1;5C <C-Right>
 map <ESC>[1;5D <C-Left>
+nnoremap gm m
 
 " Live updating substitution!
 set inccommand=nosplit
@@ -215,6 +216,9 @@ inoremap <A-j> <Esc>:tabl<cr>i
 inoremap <A-h> <Esc>gTi
 inoremap <A-l> <Esc>gti
 
+set clipboard=
+let g:EasyClipShareYanks = 1
+
 
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
@@ -270,6 +274,7 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
 Plug 'Julian/vim-textobj-brace'
 Plug 'bps/vim-textobj-python'
+Plug 'svermeulen/vim-easyclip'
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
 
@@ -279,6 +284,7 @@ set termguicolors
 nnoremap <F6> :MundoToggle<CR>
 nnoremap riW ciW<C-r>0<ESC>
 nnoremap riw ciw<C-r>0<ESC>
+let g:EasyClipShareYanks = 1
 
 "let base16colorspace=256
 " set background=dark
