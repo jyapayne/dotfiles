@@ -2,6 +2,7 @@ map <ESC>[1;5A <C-Up>
 map <ESC>[1;5B <C-Down>
 map <ESC>[1;5C <C-Right>
 map <ESC>[1;5D <C-Left>
+let g:ale_shell="/bin/bash"
 
 let mapleader = "\<Space>"
 let maplocalleader = "\<Space>"

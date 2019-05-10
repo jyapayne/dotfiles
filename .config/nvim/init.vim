@@ -3,10 +3,10 @@ map <ESC>[1;5B <C-Down>
 map <ESC>[1;5C <C-Right>
 map <ESC>[1;5D <C-Left>
 nnoremap gm m
+let g:ale_shell="/bin/bash"
 
 " Live updating substitution!
 set inccommand=nosplit
-set number relativenumber
 let g:airline#extensions#ale#enabled = 1
 
 let mapleader = "\<Space>"
@@ -229,6 +229,7 @@ let g:EasyClipShareYanks = 1
 "let g:syntastic_check_on_wq = 0
 
 call plug#begin('~/.local/share/nvim/plugged')
+Plug 'rust-lang/rust.vim'
 Plug 'zah/nim.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
