@@ -26,7 +26,6 @@ alias openurl="x-www-browser"
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
 
-#!/bin/bash
 # Passing arguments to a function
 gitrestore () {
     local file="$1"
@@ -37,6 +36,10 @@ gitrestore () {
         git checkout $(git rev-list -n 1 HEAD -- "$file")^ -- "$file"
         echo "File: $file restored!"
     fi
+}
+
+gitbasebranch () {
+    echo "$(git show-branch -a | grep '\*' | grep -v `git rev-parse --abbrev-ref HEAD` | head -n1 | sed 's/.*\[\(.*\)\].*/\1/' | sed 's/[\^~].*//')"
 }
 
 #DISPLAY=:0.0 xhost +
