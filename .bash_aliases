@@ -16,12 +16,6 @@ alias dc="docker-compose"
 
 PS1="\n\[\e[30;01m\](\[\e[31;01m\]\w\[\e[30;01m\])\[\e[30;1m\]\n\[\e[30;1m\](\[\e[34m\]\$(/bin/date +'%a %b %e %-I:%M:%S %Z %Y')\[\e[30;1m\])\n\[\e[30;1m\](\[\e[32;1m\]\u @ \h\[\e[30;1m\])-> \[\e[0m\]"
 
-export LANG=en_US.UTF-8
-
-alias grep="grep --color"
-
-alias openurl="x-www-browser"
-
 # Use bash-completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
     . /usr/share/bash-completion/bash_completion
