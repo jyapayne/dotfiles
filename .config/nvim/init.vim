@@ -444,3 +444,5 @@ au User asyncomplete_setup call asyncomplete#register_source({
     \ 'triggers': {'*': ['.'] },
     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
     \ })
+
+set guicursor=

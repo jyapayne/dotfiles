@@ -50,3 +50,4 @@ export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 . $HOME/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 . /home/joey/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
+eval "$(hub alias -s)"
