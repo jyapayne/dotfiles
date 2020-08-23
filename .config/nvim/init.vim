@@ -11,6 +11,7 @@ let g:airline#extensions#ale#enabled = 1
 
 let mapleader = "\<Space>"
 let maplocalleader = "\<Space>"
+let g:asyncomplete_auto_popup = 0
 
 let g:syntastic_c_compiler_options = "-std=c99"
 set guicursor=
@@ -55,10 +56,15 @@ let g:LargeFile = 20
 "set  rtp+=/usr/local/lib/python2.7/dist-packages/powerline/bindings/vim/
 set laststatus=2
 let g:airline_powerline_fonts = 1
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
 let g:airline_section_x = ''
 let g:airline_section_y = ''
 let g:airline_section_warning = ''
 let g:airline_section_z = '%l/%L:%c'
+let g:airline_symbols.dirty="\u2021"
+let g:airline_symbols.crypt="\ue0a2"
 
 
 set undofile                " Save undo's after file closes
@@ -208,13 +214,13 @@ let g:ctrlp_prompt_mappings = {
     \ }
 
 
-noremap <A-k> :tabr<cr>
-noremap <A-j> :tabl<cr>
+noremap <A-k> <C-u>
+noremap <A-j> <C-d>
 noremap <A-h> gT
 noremap <A-l> gt
 
-inoremap <A-k> <Esc>:tabr<cr>i
-inoremap <A-j> <Esc>:tabl<cr>i
+inoremap <A-k> <Esc><C-u>i
+inoremap <A-j> <Esc><C-d>i
 inoremap <A-h> <Esc>gTi
 inoremap <A-l> <Esc>gti
 
@@ -437,12 +443,10 @@ hi Normal ctermbg=none guibg=none
 hi NonText ctermbg=none guibg=none
 hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE guibg=black gui=NONE guifg=NONE
 set noshowmode
-
+let g:asyncomplete_auto_popup = 0
 au User asyncomplete_setup call asyncomplete#register_source({
     \ 'name': 'nim',
     \ 'whitelist': ['nim'],
     \ 'triggers': {'*': ['.'] },
     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
     \ })
-
-set guicursor=

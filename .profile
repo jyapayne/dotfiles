@@ -12,7 +12,6 @@ export PATH=/usr/lib/dart/bin:$HOME/.local/bin:/snap/bin:/usr/local/gradle/gradl
 export PATH=$PATH:$HOME/.cargo/bin:$HOME/yuzu/:$HOME/.nimble/bin:$HOME/nimlibs
 export PATH=$PATH:$HOME/gcclibs/aarch64-linux-gnu/bin:$HOME/gcclibs/arm-linux-gnueabi/bin
 export PATH=$HOME/android-studio/bin:$HOME/.pub-cache/bin:$HOME/flutter/bin:$PATH
-export LD_LIBRARY_PATH=$HOME/Qt/5.12.0/gcc_64/lib:$LD_LIBRARY_PATH
 export GOROOT=/usr/local/go
 export GOBIN=$GOROOT/bin
 export ANDROID_HOME=$HOME/Android/Sdk
@@ -23,9 +22,9 @@ export DEVKITA64=${DEVKITPRO}/devkitA64
 export PATH=$PATH:$DEVKITA64/bin:$DEVKITPRO/tools/bin
 export JAVA_HOME=/usr/lib/jvm/default-java
 export PATH=$HOME/.opam/4.05.0/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:$PATH
-export LD_LIBRARY_PATH="$HOME/Qt/5.12.0/gcc_64/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH:/lib:/usr/lib:/usr/local/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/i386-linux-gnu"
+export LD_LIBRARY_PATH="$HOME/Qt/5.13.1/gcc_64/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH:/lib:/usr/lib:/usr/local/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/i386-linux-gnu"
 export LFS=/mnt/lfs
-export GODOT_BIN="$HOME/Godot/godot.x11.opt.tools.64"
+export GODOT_BIN="$HOME/Godot/Godot_v3.2.2-stable_x11.64"
 export PYTHONSTARTUP="$HOME/.pythonstartup"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
 export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
@@ -81,7 +80,7 @@ fi
 #xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 
 export PATH="$HOME/.cargo/bin:$PATH"
-export PATH=/usr/lib/dart/bin:$HOME/.local/bin:/snap/bin:/usr/local/gradle/gradle-4.6/bin:/usr/local/kotlinc/bin:/usr/local/android-studio/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin:/usr/sbin:/local/bin:/usr/local/bin:/sbin:/usr/games:/opt/android-sdk/platform-tools:/opt/android-sdk/tools:/opt/android-sdk
+#export PATH=/usr/lib/dart/bin:$HOME/.local/bin:/snap/bin:/usr/local/gradle/gradle-4.6/bin:/usr/local/kotlinc/bin:/usr/local/android-studio/bin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin:/usr/sbin:/local/bin:/usr/local/bin:/sbin:/usr/games:/opt/android-sdk/platform-tools:/opt/android-sdk/tools:/opt/android-sdk
 export PATH=$PATH:$HOME/.cargo/bin:$HOME/yuzu/:$HOME/.nimble/bin:$HOME/nimlibs
 export PATH=$PATH:$HOME/gcclibs/aarch64-linux-gnu/bin:$HOME/gcclibs/arm-linux-gnueabi/bin
 export PATH=$HOME/.pub-cache/bin:$PATH
@@ -97,7 +96,6 @@ export DEVKITA64=${DEVKITPRO}/devkitA64
 export PATH=$PATH:$DEVKITA64/bin:$DEVKITPRO/tools/bin
 export JAVA_HOME=/usr/lib/jvm/default-java
 export PATH=$HOME/.opam/4.05.0/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:$PATH
-export LD_LIBRARY_PATH="$HOME/Qt/5.12.3/gcc_64/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH:/lib:/usr/lib:/usr/local/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/i386-linux-gnu"
 export LFS=/mnt/lfs
 export PYTHONSTARTUP="$HOME/.pythonstartup"
 export ANT_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
