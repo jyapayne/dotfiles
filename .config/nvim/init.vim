@@ -47,7 +47,6 @@ set history=10000
 set foldmethod=indent
 set foldlevel=99
 let g:pydiction_location='/home/joey/.vim/bundle/pydiction/complete-dict'
-let g:python_version_2 = 1
 let g:jsx_ext_required = 0
 let g:asyncrun_auto = "make"
 let g:syntastic_enable_elixir_checker = 1
@@ -141,7 +140,7 @@ command U :%s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
 map <Leader>y "*y
 map <Leader>p "*p
 
-nmap =j :%!python -m json.tool<CR>
+nmap =j :%!python3 -m json.tool<CR>
 
 if !exists("autocommands_loaded")
   let autocommands_loaded = 1
@@ -191,6 +190,8 @@ endf
 " Jump to tag
 nn <C-g> :call JumpToDef()<cr>
 ino <C-g> <esc>:call JumpToDef()<cr>i
+
+nn <C-m> :Rg<cr>
 
 autocmd FileType ocaml nmap <C-t> :MerlinTypeOf<cr>
 
@@ -447,6 +448,49 @@ let g:asyncomplete_auto_popup = 0
 au User asyncomplete_setup call asyncomplete#register_source({
     \ 'name': 'nim',
     \ 'whitelist': ['nim'],
-    \ 'triggers': {'*': ['.'] },
+    \ 'triggers': {'nim': ['.'] },
     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
     \ })
+
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+imap <silent> . .<Plug>(asyncomplete_force_refresh)
+
+" let g:asyncomplete_auto_popup = 0
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+set completeopt+=preview
+set rtp+=/usr/local/opt/fzf
+function! WrapForTmux(s)
+  if !exists('$TMUX')
+    return a:s
+  endif
+
+  let tmux_start = "\<Esc>Ptmux;"
+  let tmux_end = "\<Esc>\\"
+
+  return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
+endfunction
+
+let &t_SI .= WrapForTmux("\<Esc>[?2004h")
+let &t_EI .= WrapForTmux("\<Esc>[?2004l")
+
+function! XTermPasteBegin()
+  set pastetoggle=<Esc>[201~
+  set paste
+  return ""
+endfunction
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
