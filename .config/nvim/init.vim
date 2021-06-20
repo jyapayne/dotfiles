@@ -717,6 +717,8 @@ highlight CocHighlightText ctermbg=lightblue guibg=#002c4b
 
 
 hi Normal ctermbg=none guibg=none
+hi EndOfBuffer ctermbg=none guibg=none
+"hi SignColumn ctermbg=none guibg=none
 hi NonText ctermbg=none guibg=none
 hi LineNr ctermbg=none guibg=none
 "hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE guibg=black gui=NONE guifg=NONE
