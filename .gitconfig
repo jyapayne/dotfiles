@@ -1,19 +1,22 @@
+# This is Git's per-user configuration file.
 [user]
-	email = jyapayne@gmail.com
+# Please adapt and uncomment the following lines:
 	name = Joey Yakimowich-Payne
+	email = jyapayne@gmail.com
 [core]
 	editor = nvim
+[pull]
+	rebase = false
 [color]
-	ui = auto
+    ui = auto
 [push]
-	default = current
+    default = current
 [alias]
-  basebranch = !bash -c 'git show-branch -a | grep "\\*" | grep -v $(git rev-parse --abbrev-ref HEAD) | head -n1 | sed \"s/.*\\[\\(.*\\)\\].*/\\1/\" | sed \"s/[\\^~].*//\"'
-  # list files which have changed since REVIEW_BASE
-  # (REVIEW_BASE defaults to 'master' in my zshrc)
-  files = !bash -c 'source $HOME/.bash_aliases && echo $(git basebranch) && git diff --name-only $(git merge-base HEAD \"$(git basebranch)\")'
-
-  # Same as above, but with a diff stat instead of just names
-  # (better for interactive use)
-  stat = !bash -c 'source $HOME/.bashrc && git diff --stat $(git merge-base HEAD \"$(git basebranch)\")'
-  review = !nvim -p $(git files) +\"tabdo Gdiff $(git basebranch)\" +\"let g:gitgutter_diff_base = '$(git basebranch)'\"
+    basebranch = !bash -c 'git show-branch -a | grep "\\*" | grep -v $(git rev-parse --abbrev-ref HEAD) | head -n1 | sed \"s/.*\\[\\(.*\\)\\].*/\\1/\" | sed \"s/[\\^~].*//\"'
+    # list files which have changed since REVIEW_BASE
+    # (REVIEW_BASE defaults to 'master' in my zshrc)
+    files = !bash -c 'source $HOME/.bash_aliases && echo $(git basebranch) && git diff --name-only $(git merge-base HEAD \"$(git basebranch)\")'
+    # Same as above, but with a diff stat instead of just names
+    # (better for interactive use)
+    stat = !bash -c 'source $HOME/.bashrc && git diff --stat $(git merge-base HEAD \"$(git basebranch)\")'
+    review = !nvim -p $(git files) +\"tabdo Gdiff $(git basebranch)\" +\"let g:gitgutter_diff_base = '$(git basebranch)'\"
