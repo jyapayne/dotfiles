@@ -92,6 +92,7 @@ autocmd Filetype nim setlocal ts=2 sts=2 sw=2 expandtab
 autocmd Filetype less setlocal ts=2 sts=2 sw=2 expandtab
 autocmd Filetype css setlocal ts=2 sts=2 sw=2 expandtab
 let g:syntastic_javascript_checkers = ['eslint', 'flow']
+let g:syntastic_java_checkers = []
 
 let g:neoformat_javascript_prettier = {
     \ 'exe': 'prettier',
@@ -181,10 +182,11 @@ fun! JumpToDef()
 endf
 
 " Jump to tag
-nn <C-g> :call JumpToDef()<cr>
-ino <C-g> <esc>:call JumpToDef()<cr>i
+" nn <C-g> :call JumpToDef()<cr>
+" ino <C-g> <esc>:call JumpToDef()<cr>i
 
 "nn <C-m> :Rg<cr>
+nnoremap <leader>ff :Rg<CR>
 
 autocmd FileType ocaml nmap <C-t> :MerlinTypeOf<cr>
 
@@ -276,16 +278,36 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
 Plug 'Julian/vim-textobj-brace'
 Plug 'bps/vim-textobj-python'
+Plug 'wellle/targets.vim'
 Plug 'svermeulen/vim-easyclip'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'jremmen/vim-ripgrep'
 Plug 'rescript-lang/vim-rescript'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kassio/neoterm'
 Plug 'reasonml-editor/vim-reason-plus'
 Plug 'jyapayne/vim-code-dark'
+Plug 'puremourning/vimspector'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'ryanoasis/vim-devicons'
+Plug 'TimUntersberger/neogit'
+Plug 'sindrets/diffview.nvim'
+Plug 'lewis6991/gitsigns.nvim'
+
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
+
+" lewis6991/gitsigns.nvim
+lua << EOF
+ require('gitsigns').setup({
+     \ word_diff = true
+   \ })
+EOF
+
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
@@ -587,7 +609,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K to show documentation in preview window.
+" Use J to show documentation in preview window.
 nnoremap <silent> J :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
@@ -640,14 +662,12 @@ xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of language server.
@@ -758,4 +778,62 @@ for tool in s:opam_packages
     call s:opam_configuration[tool]()
   endif
 endfor
+
 " ## end of OPAM user-setup addition for vim / base ## keep this line
+let g:ale_linters = {'java': []}
+
+" for normal mode - the word under the cursor
+nmap <Leader>di <Plug>VimspectorBalloonEval
+" for visual mode, the visually selected text
+xmap <Leader>di <Plug>VimspectorBalloonEval
+let g:vimspector_enable_mappings = 'HUMAN'
+
+" nnoremap <leader><space> :GFiles<CR>
+
+" nvim-telescope/telescope.nvim
+lua << EOF
+_G.telescope_find_files_in_path = function(path)
+ local _path = path or vim.fn.input("Dir: ", "", "dir")
+ require("telescope.builtin").find_files({search_dirs = {_path}})
+end
+EOF
+lua << EOF
+_G.telescope_live_grep_in_path = function(path)
+ local _path = path or vim.fn.input("Dir: ", "", "dir")
+ require("telescope.builtin").live_grep({search_dirs = {_path}})
+end
+EOF
+
+nnoremap <leader><space> :Telescope git_files<CR>
+nnoremap <leader>fd :lua telescope_find_files_in_path()<CR>
+nnoremap <leader>fD :lua telescope_live_grep_in_path()<CR>
+nnoremap <leader>ft :lua telescope_find_files_in_path("./tests")<CR>
+nnoremap <leader>fT :lua telescope_live_grep_in_path("./tests")<CR>
+" nnoremap <leader>ff :Telescope live_grep<CR>
+nnoremap <leader>fo :Telescope file_browser<CR>
+nnoremap <leader>fn :Telescope find_files<CR>
+nnoremap <leader>fg :Telescope git_branches<CR>
+nnoremap <leader>fb :Telescope buffers<CR>
+nnoremap <leader>fs :Telescope lsp_document_symbols<CR>
+nnoremap <leader>ff :Telescope live_grep<CR>
+nnoremap <leader>FF :Telescope grep_string<CR>
+
+" TimUntersberger/neogit and sindrets/diffview.nvim
+lua << EOF
+require("neogit").setup {
+  disable_commit_confirmation = true,
+  integrations = {
+    diffview = true
+    }
+  }
+EOF
+nnoremap <leader>gg :Neogit<cr>
+nnoremap <leader>gd :DiffviewOpen<cr>
+nnoremap <leader>gD :DiffviewOpen main<cr>
+nnoremap <leader>gl :Neogit log<cr>
+nnoremap <leader>gp :Neogit push<cr>
+
+
+hi GitSignsAdd ctermfg=green ctermbg=none guibg=#212121 guifg=#32cd32 gui=bold cterm=bold
+hi GitSignsDelete ctermfg=red ctermbg=none guibg=#212121 guifg=#ff6347 gui=bold cterm=bold
+hi GitSignsChange ctermfg=blue ctermbg=none guibg=#212121 guifg=#1e90ff gui=bold cterm=bold
