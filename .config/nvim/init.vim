@@ -237,7 +237,8 @@ Plug 'rust-lang/rust.vim'
 Plug 'jyapayne/nim.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree' |
+            \ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'hynek/vim-python-pep8-indent'
 Plug 'pangloss/vim-javascript'
 Plug 'Glench/Vim-Jinja2-Syntax'
@@ -712,9 +713,9 @@ let g:neoterm_default_mod = 'vertical botright'
 let g:neoterm_autoinsert = 1
 let g:neoterm_autoscroll = 1
 let g:neoterm_term_per_tab = 1
-nnoremap <c-y> :Ttoggle<CR>
-inoremap <c-y> <Esc>:Ttoggle<CR>
-tnoremap <c-y> <c-\><c-n>:Ttoggle<CR>
+nnoremap <c-t> :Ttoggle<CR>
+inoremap <c-t> <Esc>:Ttoggle<CR>
+tnoremap <c-t> <c-\><c-n>:Ttoggle<CR>
 
 " color scheme
 colorscheme codedark
@@ -837,3 +838,5 @@ nnoremap <leader>gp :Neogit push<cr>
 hi GitSignsAdd ctermfg=green ctermbg=none guibg=#212121 guifg=#32cd32 gui=bold cterm=bold
 hi GitSignsDelete ctermfg=red ctermbg=none guibg=#212121 guifg=#ff6347 gui=bold cterm=bold
 hi GitSignsChange ctermfg=blue ctermbg=none guibg=#212121 guifg=#1e90ff gui=bold cterm=bold
+
+nmap <F1> :CocCommand java.debug.vimspector.start<CR>
