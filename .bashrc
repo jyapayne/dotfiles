@@ -127,3 +127,52 @@ if [ -f '/home/joey/cloudsdk/google-cloud-sdk/path.bash.inc' ]; then source '/ho
 if [ -f '/home/joey/cloudsdk/google-cloud-sdk/completion.bash.inc' ]; then source '/home/joey/cloudsdk/google-cloud-sdk/completion.bash.inc'; fi
 
 export GOOGLE_APPLICATION_CREDENTIALS="$HOME/Documents/Keys/Test Cloud TTS-28e661a83ec0.json"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export HISTTIMEFORMAT="%F %T "
+
+export BASH_SILENCE_DEPRECATION_WARNING=1
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+alias vim="nvim"
+export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)
+
+export PATH="/Users/joey/Library/Python/3.9/bin:$PATH"
+export PATH="$HOME/.ghcup/bin/:$PATH"
+export PATH="/usr/local/opt/gettext/bin:/usr/local/opt/grep/libexec/gnubin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/opt/homebrew/bin:/opt/homebrew/lib:/opt/homebrew/include:$PATH"
+export PATH="/Users/joey/.local/bin:/usr/local/bin:$PATH"
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+export PATH="$HOME/Nim/bin:$HOME/.nimble/bin:$PATH"
+#export PATH="$HOME/.nimble/bin:$PATH"
+#export LDFLAGS="-L/usr/local/opt/sqlite/lib"
+#export CPPFLAGS="-I/usr/local/opt/sqlite/include"
+
+#export PKG_CONFIG_PATH="/usr/local/opt/sqlite/lib/pkgconfig"
+eval "$(hub alias -s)"
+export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+#export PATH="/Library/Developer/CommandLineTools/usr/bin:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib:$PATH"
+export LANG="en_US.UTF-8"
+export LC_CTYPE="en_US.UTF-8"
+export PATH="/usr/local/opt/php@7.3/bin:$PATH"
+export PATH="/usr/local/opt/php@7.3/sbin:$PATH"
+export GODOT_BIN="/Applications/Godot.app/Contents/MacOS/Godot"
+
+# opam configuration
+test -r /Users/joey/.opam/opam-init/init.sh && . /Users/joey/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+export PATH="/opt/homebrew/opt/sqlite/bin:$PATH"
+
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+export CPLUS_INCLUDE_PATH=$(llvm-config --includedir):/opt/homebrew/include:$CPLUS_INCLUDE_PATH
+export LD_LIBRARY_PATH=$(llvm-config --libdir):/opt/homebrew/lib:$LD_LIBRARY_PATH
+source $HOME/.ghcup/env
+source /usr/local/lib/bazel/bin/bazel-complete.bash
+export PATH="/opt/homebrew/opt/qt\@5/bin:$PATH"
+
+# export LDFLAGS="-L/opt/homebrew/opt/qt\@5/lib"
+# export CPPFLAGS="-I/opt/homebrew/opt/qt\@5/include"
+
+# export PKG_CONFIG_PATH="/opt/homebrew/opt/qt\@5/lib/pkgconfig"
+export CMAKE_PREFIX_PATH=/opt/homebrew/Cellar/qt\@5/5.15.2
+alias sshkvm4g="ssh root@172.111.1.101"
+alias sshkvm2g="ssh root@172.111.1.102"

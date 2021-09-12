@@ -14,9 +14,7 @@ alias tcat='highlight -O ansi --force'
 
 alias dc="docker-compose"
 
-# PS1="\n\[\e[30;01m\](\[\e[31;01m\]\w\[\e[30;01m\])\[\e[30;1m\]\n\[\e[30;1m\](\[\e[34m\]\$(/bin/date +'%a %b %e %-I:%M:%S %Z %Y')\[\e[30;1m\])\n\[\e[30;1m\](\[\e[32;1m\]\u @ \h\[\e[30;1m\])-> \[\e[0m\]"
-
-PS1="\n\[\e[30;01m\](\[\e[31;01m\]\w\[\e[30;01m\]) \[\033[30;01m\]\$(parse_git_branch)\n\[\e[30;1m\]\[\e[30;1m\](\[\e[34m\]\$(/bin/date +'%a %b %e %-I:%M:%S %Z %Y')\[\e[30;1m\])\n\[\e[30;1m\](\[\e[32;1m\]\u\[\e[30;1m\])-> \[\e[0m\]"
+PS1="\n\[\e[30;01m\](\[\e[31;01m\]\w\[\e[30;01m\])\[\e[30;1m\]\n\[\e[30;1m\](\[\e[34m\]\$(/bin/date +'%a %b %e %-I:%M:%S %Z %Y')\[\e[30;1m\])\n\[\e[30;1m\](\[\e[32;1m\]\u\[\e[30;1m\])-> \[\e[0m\]"
 
 # Use bash-completion, if available
 [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
@@ -46,10 +44,9 @@ source ~/bashscripts/disable_trackpad.bash
 HISTSIZE=50000
 HISTFILESIZE=500000
 
-export TERM=screen-256color
+export TERM=xterm-256color
 #source $HOME/.sdkman/bin/sdkman-init.sh
 export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 . $HOME/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 . /home/joey/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
-eval "$(hub alias -s)"

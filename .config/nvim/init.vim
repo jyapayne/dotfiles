@@ -210,13 +210,13 @@ let g:ctrlp_prompt_mappings = {
     \ }
 
 
-noremap ˚ :tabr<cr>
-noremap ∆ :tabl<cr>
+" noremap ˚ :tabr<cr>
+" noremap ∆ :tabl<cr>
 noremap ˙ gT
 noremap ¬ gt
 
-inoremap ˚ <Esc>:tabr<cr>i
-inoremap ∆ <Esc>:tabl<cr>i
+" inoremap ˚ <Esc>:tabr<cr>i
+" inoremap ∆ <Esc>:tabl<cr>i
 inoremap ˙ <Esc>gTi
 inoremap ¬ <Esc>gti
 
@@ -289,18 +289,27 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kassio/neoterm'
 Plug 'reasonml-editor/vim-reason-plus'
 Plug 'jyapayne/vim-code-dark'
-Plug 'puremourning/vimspector'
+" Plug 'jyapayne/vimspector'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ryanoasis/vim-devicons'
 Plug 'TimUntersberger/neogit'
-Plug 'sindrets/diffview.nvim'
-Plug 'lewis6991/gitsigns.nvim'
+Plug 'sindrets/diffview.nvim', {'branch': 'main'}
+Plug 'lewis6991/gitsigns.nvim', {'branch': 'main'}
+Plug 'peterhoeg/vim-qml'
+Plug 'KabbAmine/vCoolor.vim'
+Plug 'mfussenegger/nvim-dap'
+" Plug 'rcarriga/nvim-dap-ui'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-telescope/telescope-dap.nvim'
+Plug 'theHamsta/nvim-dap-virtual-text'
 
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
+
+let g:gitsigns_head = "main"
 
 " lewis6991/gitsigns.nvim
 lua << EOF
@@ -308,6 +317,41 @@ lua << EOF
      \ word_diff = true
    \ })
 EOF
+
+" let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-cpptools', 'CodeLLDB' ]
+" puremourning/vimspector
+ " fun! GotoWindow(id)
+ "   :call win_gotoid(a:id)
+ " endfun
+ " func! AddToWatch()
+ "   let word = expand("<cexpr>")
+ "   call vimspector#AddWatch(word)
+ " endfunction
+ " let g:vimspector_base_dir = expand('$HOME/.config/vimspector-config')
+ " let g:vimspector_sidebar_width = 60
+ " nnoremap <leader>da :call vimspector#Launch()<CR>
+ " nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
+ " nnoremap <leader>dv :call GotoWindow(g:vimspector_session_windows.variables)<CR>
+ " nnoremap <leader>dw :call GotoWindow(g:vimspector_session_windows.watches)<CR>
+ " nnoremap <leader>ds :call GotoWindow(g:vimspector_session_windows.stack_trace)<CR>
+ " nnoremap <leader>do :call GotoWindow(g:vimspector_session_windows.output)<CR>
+ " nnoremap <leader>di :call AddToWatch()<CR>
+ " nnoremap <leader>dx :call vimspector#Reset()<CR>
+ " nnoremap <leader>dX :call vimspector#ClearBreakpoints()<CR>
+ " nnoremap <S-k> :call vimspector#StepOut()<CR>
+ " nnoremap <S-l> :call vimspector#StepInto()<CR>
+ " nnoremap <S-j> :call vimspector#StepOver()<CR>
+ " nnoremap <leader>d_ :call vimspector#Restart()<CR>
+ " nnoremap <leader>dn :call vimspector#Continue()<CR>
+ " nnoremap <leader>drc :call vimspector#RunToCursor()<CR>
+ " nnoremap <leader>dh :call vimspector#ToggleBreakpoint()<CR>
+ " nnoremap <leader>de :call vimspector#ToggleConditionalBreakpoint()<CR>
+ " let g:vimspector_sign_priority = {
+ "   \    'vimspectorBP':         998,
+ "   \    'vimspectorBPCond':     997,
+ "   \    'vimspectorBPDisabled': 996,
+ "   \    'vimspectorPC':         999,
+ "   \ }
 
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -444,29 +488,6 @@ exe 'hi htmlSpecialTagName guifg='s:keyword
 " Markdown Highlighting
 exe 'hi mkdCode guifg='s:builtin
 
-set hlsearch
-highlight Search ctermbg=blue ctermfg=white guibg=#006891 guifg=white
-highlight IncSearch ctermbg=blue ctermfg=white guifg=#7D008D guibg=white
-
-filetype on
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-
-highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-highlight OverLength ctermbg=red ctermfg=black guibg=#592929 gui=bold
-
-highlight ALEError ctermfg=black ctermbg=red guifg=black guibg=red
-highlight ALEErrorSign ctermfg=none ctermbg=black guifg=red guibg=#212121
-highlight ALEWarning ctermfg=black ctermbg=yellow guifg=black guibg=#a09500
-highlight ALEWarningSign ctermfg=yellow ctermbg=none guibg=#212121 guifg=#a09500
-highlight SignColumn ctermbg=darkgrey guibg=#212121
-highlight TabLineFill guibg=none guifg=none gui=none
-highlight TabLineSel guibg=#353535 guifg=none
-highlight TabLine guibg=none guifg=none
-
-hi Normal ctermbg=none guibg=none
-hi NonText ctermbg=none guibg=none
-hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE guibg=black gui=NONE guifg=NONE
-set noshowmode
 
 " au User asyncomplete_setup call asyncomplete#register_source({
 "     \ 'name': 'nim',
@@ -716,6 +737,7 @@ let g:neoterm_term_per_tab = 1
 nnoremap <c-t> :Ttoggle<CR>
 inoremap <c-t> <Esc>:Ttoggle<CR>
 tnoremap <c-t> <c-\><c-n>:Ttoggle<CR>
+tnoremap <Esc> <C-\><C-n>
 
 " color scheme
 colorscheme codedark
@@ -731,9 +753,9 @@ highlight ALEErrorSign ctermfg=none ctermbg=black guifg=red guibg=#212121
 highlight ALEWarning ctermbg=yellow guibg=#504a08
 highlight ALEWarningSign ctermfg=yellow ctermbg=none guibg=#212121 guifg=#ecd517
 highlight SignColumn ctermbg=darkgrey guibg=#212121
-highlight TabLineFill guibg=none guifg=none gui=none
-highlight TabLineSel guibg=#353535 guifg=none
-highlight TabLine guibg=none guifg=none
+" highlight TabLineFill guibg=none guifg=none gui=none
+" highlight TabLineSel guibg=#353535 guifg=none
+" highlight TabLine guibg=none guifg=none
 highlight CocHighlightText ctermbg=lightblue guibg=#002c4b
 
 
@@ -783,11 +805,11 @@ endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
 let g:ale_linters = {'java': []}
 
-" for normal mode - the word under the cursor
-nmap <Leader>di <Plug>VimspectorBalloonEval
-" for visual mode, the visually selected text
-xmap <Leader>di <Plug>VimspectorBalloonEval
-let g:vimspector_enable_mappings = 'HUMAN'
+" " for normal mode - the word under the cursor
+" nmap <Leader>di <Plug>VimspectorBalloonEval
+" " for visual mode, the visually selected text
+" xmap <Leader>di <Plug>VimspectorBalloonEval
+" let g:vimspector_enable_mappings = 'HUMAN'
 
 " nnoremap <leader><space> :GFiles<CR>
 
@@ -805,6 +827,8 @@ _G.telescope_live_grep_in_path = function(path)
 end
 EOF
 
+let b:current_syntax = 'nim'
+
 nnoremap <leader><space> :Telescope git_files<CR>
 nnoremap <leader>fd :lua telescope_find_files_in_path()<CR>
 nnoremap <leader>fD :lua telescope_live_grep_in_path()<CR>
@@ -818,6 +842,102 @@ nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fs :Telescope lsp_document_symbols<CR>
 nnoremap <leader>ff :Telescope live_grep<CR>
 nnoremap <leader>FF :Telescope grep_string<CR>
+
+" mfussenegger/nvim-dap
+lua << EOF
+local dap = require('dap')
+
+function os.capture(cmd)
+  local f = assert(io.popen(cmd .. ' 2>&1', 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  return s
+end
+
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/opt/homebrew/opt/llvm/bin/lldb-vscode', -- adjust as needed
+  name = "lldb"
+}
+dap.configurations.nim = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = function()
+        -- return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+
+        print("Compiling...")
+        local filename = vim.api.nvim_buf_get_name(0)
+        local res = os.capture('nim c --debugger:native ' .. filename)
+        print("Running...")
+        return filename:match("(.+)%..+$");
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = function()
+        return vim.fn.input('Args: ', '')
+    end,
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    runInTerminal = false
+  },
+}
+
+-- If you want to use this for rust and c, add something like this:
+
+-- dap.configurations.c = dap.configurations.cpp
+-- dap.configurations.nim = dap.configurations.cpp
+
+vim.fn.sign_define('DapBreakpoint', {text='●', texthl='ErrorMsg', linehl='', numhl=''})
+vim.fn.sign_define('DapBreakpointRejected', {text='●', texthl='LineNr', linehl='', numhl=''})
+vim.fn.sign_define('DapLogPoint', {text='L', texthl='', linehl='', numhl=''})
+vim.fn.sign_define('DapStopped', {text='→', texthl='WarningMsg', linehl='debugPC', numhl=''})
+EOF
+
+au FileType dap-repl lua require('dap.ext.autocompl').attach()
+
+nnoremap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> ø :lua require'dap'.step_out()<CR>
+nnoremap <silent> ˚ :lua require'dap'.step_into()<CR>
+nnoremap <silent> ∆ :lua require'dap'.step_over()<CR>
+nnoremap <silent> <leader>ds :lua require'dap'.close()<CR>
+nnoremap <silent> <leader>dn :lua require'dap'.continue()<CR>
+nnoremap <silent> <leader>dk :lua require'dap'.up()<CR>
+nnoremap <silent> <leader>dj :lua require'dap'.down()<CR>
+nnoremap <silent> <leader>d_ :lua require'dap'.disconnect();require'dap'.stop();require'dap'.run_last()<CR>
+nnoremap <silent> <leader>dr :lua require'dap'.repl.toggle()<CR><C-w>l
+nnoremap <silent> <leader>rc :lua require'dap'.run_to_cursor()<CR><C-w>l
+nnoremap <silent> <leader>rb :lua require'dap'.reverse_continue()<CR><C-w>l
+"nnoremap <silent> <leader>di :lua require'dap.ui.variables'.hover()<CR>
+vnoremap <silent> <leader>di :lua require'dap.ui.variables'.visual_hover()<CR>
+nnoremap <silent> <leader>d? :lua require'dap.ui.variables'.scopes()<CR>
+nnoremap <silent> <leader>de :lua require'dap'.set_exception_breakpoints({"all"})<CR>
+nnoremap <silent> <leader>da :lua require'debugHelper'.attach()<CR>
+nnoremap <silent> <leader>dA :lua require'debugHelper'.attachToRemote()<CR>
+nnoremap <silent> <leader>di :lua require'dap.ui.widgets'.hover()<CR>
+nnoremap <silent> <leader>q :q<CR>
+nnoremap <silent> <leader>d? :lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>
+
+" Plug 'nvim-telescope/telescope-dap.nvim'
+lua << EOF
+require('telescope').setup()
+require('telescope').load_extension('dap')
+EOF
+nnoremap <leader>df :Telescope dap frames<CR>
+nnoremap <leader>dc :Telescope dap commands<CR>
+nnoremap <leader>dh :Telescope dap list_breakpoints<CR>
+
+" theHamsta/nvim-dap-virtual-text and mfussenegger/nvim-dap
+let g:dap_virtual_text = v:true
 
 " TimUntersberger/neogit and sindrets/diffview.nvim
 lua << EOF

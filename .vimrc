@@ -285,6 +285,15 @@ nnoremap <F6> :MundoToggle<CR>
 "let base16colorspace=256
 " set background=dark
 "colorscheme base16-default-dark
+
+autocmd Filetype ocaml setlocal ts=2 sts=2 sw=2 expandtab
+
+"colorscheme tender
+
+hi Normal ctermbg=none
+hi NonText ctermbg=none
+hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE
+set noshowmode
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
 let s:opam_share_dir = system("opam config var share")
 let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
@@ -317,11 +326,3 @@ for tool in s:opam_packages
   endif
 endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
-autocmd Filetype ocaml setlocal ts=2 sts=2 sw=2 expandtab
-
-"colorscheme tender
-
-hi Normal ctermbg=none
-hi NonText ctermbg=none
-hi CursorLine  cterm=NONE ctermbg=black ctermfg=NONE
-set noshowmode
