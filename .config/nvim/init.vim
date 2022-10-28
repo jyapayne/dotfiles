@@ -1,7 +1,90 @@
-map <ESC>[1;5A <C-Up>
-map <ESC>[1;5B <C-Down>
-map <ESC>[1;5C <C-Right>
-map <ESC>[1;5D <C-Left>
+
+
+call plug#begin('~/.local/share/nvim/plugged')
+Plug 'wjsetzer/freepascal-vim'
+Plug 'rust-lang/rust.vim'
+Plug 'jyapayne/nim.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-unimpaired'
+Plug 'preservim/nerdtree' |
+            \ Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'hynek/vim-python-pep8-indent'
+Plug 'pangloss/vim-javascript'
+Plug 'Glench/Vim-Jinja2-Syntax'
+Plug 'tpope/vim-haml'
+Plug 'hdima/python-syntax'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'mxw/vim-jsx'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'vim-scripts/errormarker.vim'
+Plug 'elixir-lang/vim-elixir'
+Plug 'jreybert/vim-largefile'
+Plug 'sbdchd/neoformat'
+Plug 'tpope/vim-obsession'
+Plug 'dhruvasagar/vim-prosession'
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" Plug 'vim-syntastic/syntastic'
+"Plug 'itchyny/lightline.vim'
+Plug 'morhetz/gruvbox'
+Plug 'tpope/vim-commentary'
+Plug 'w0rp/ale'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'udalov/kotlin-vim'
+Plug 'simnalamburt/vim-mundo'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'tpope/vim-surround'
+" Plug 'alaviss/nim.nvim'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'tpope/vim-repeat'
+Plug 'christoomey/vim-sort-motion'
+Plug 'christoomey/vim-system-copy'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-line'
+Plug 'Julian/vim-textobj-brace'
+Plug 'bps/vim-textobj-python'
+Plug 'wellle/targets.vim'
+Plug 'svermeulen/vim-easyclip'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'jremmen/vim-ripgrep'
+Plug 'rescript-lang/vim-rescript'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'kassio/neoterm'
+Plug 'reasonml-editor/vim-reason-plus'
+Plug 'jyapayne/vim-code-dark'
+" Plug 'jyapayne/vimspector'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'ryanoasis/vim-devicons'
+Plug 'TimUntersberger/neogit'
+Plug 'sindrets/diffview.nvim', {'branch': 'main'}
+Plug 'lewis6991/gitsigns.nvim', {'branch': 'main'}
+Plug 'peterhoeg/vim-qml'
+Plug 'mfussenegger/nvim-dap'
+" Plug 'rcarriga/nvim-dap-ui'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-telescope/telescope-dap.nvim'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'mfussenegger/nvim-dap-python'
+Plug 'KabbAmine/vCoolor.vim'
+" Plug 'chrisbra/Colorizer'
+Plug 'norcalli/nvim-colorizer.lua'
+
+"Plug 'baabelfish/nvim-nim'
+call plug#end()
+
+" map <ESC>[1;5A <C-Up>
+" map <ESC>[1;5B <C-Down>
+" map <ESC>[1;5C <C-Right>
+" map <ESC>[1;5D <C-Left>
 nnoremap gm m
 let g:ale_shell="/bin/bash"
 
@@ -232,82 +315,6 @@ let g:EasyClipShareYanks = 1
 "let g:syntastic_auto_loc_list = 1
 "let g:syntastic_check_on_wq = 0
 
-call plug#begin('~/.local/share/nvim/plugged')
-Plug 'rust-lang/rust.vim'
-Plug 'jyapayne/nim.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-unimpaired'
-Plug 'preservim/nerdtree' |
-            \ Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'hynek/vim-python-pep8-indent'
-Plug 'pangloss/vim-javascript'
-Plug 'Glench/Vim-Jinja2-Syntax'
-Plug 'tpope/vim-haml'
-Plug 'hdima/python-syntax'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'mxw/vim-jsx'
-Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'mustache/vim-mustache-handlebars'
-Plug 'vim-scripts/errormarker.vim'
-Plug 'elixir-lang/vim-elixir'
-Plug 'jreybert/vim-largefile'
-Plug 'sbdchd/neoformat'
-Plug 'tpope/vim-obsession'
-Plug 'dhruvasagar/vim-prosession'
-Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-" Plug 'vim-syntastic/syntastic'
-"Plug 'itchyny/lightline.vim'
-Plug 'morhetz/gruvbox'
-Plug 'tpope/vim-commentary'
-Plug 'w0rp/ale'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'udalov/kotlin-vim'
-Plug 'simnalamburt/vim-mundo'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'tpope/vim-surround'
-Plug 'alaviss/nim.nvim'
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'tpope/vim-repeat'
-Plug 'christoomey/vim-sort-motion'
-Plug 'christoomey/vim-system-copy'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-line'
-Plug 'Julian/vim-textobj-brace'
-Plug 'bps/vim-textobj-python'
-Plug 'wellle/targets.vim'
-Plug 'svermeulen/vim-easyclip'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'jremmen/vim-ripgrep'
-Plug 'rescript-lang/vim-rescript'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'kassio/neoterm'
-Plug 'reasonml-editor/vim-reason-plus'
-Plug 'jyapayne/vim-code-dark'
-" Plug 'jyapayne/vimspector'
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'ryanoasis/vim-devicons'
-Plug 'TimUntersberger/neogit'
-Plug 'sindrets/diffview.nvim', {'branch': 'main'}
-Plug 'lewis6991/gitsigns.nvim', {'branch': 'main'}
-Plug 'peterhoeg/vim-qml'
-Plug 'KabbAmine/vCoolor.vim'
-Plug 'mfussenegger/nvim-dap'
-" Plug 'rcarriga/nvim-dap-ui'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-telescope/telescope-dap.nvim'
-Plug 'theHamsta/nvim-dap-virtual-text'
-
-"Plug 'baabelfish/nvim-nim'
-call plug#end()
 
 let g:gitsigns_head = "main"
 
@@ -356,6 +363,7 @@ EOF
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
+lua require'colorizer'.setup()
 
 nnoremap <F6> :MundoToggle<CR>
 nnoremap riW ciW<C-r>0<ESC>
@@ -593,6 +601,7 @@ if has("nvim-0.5.0") || has("patch-8.1.1564")
 else
   set signcolumn=yes
 endif
+au FileType python let b:coc_root_patterns = ['.git', '.env', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'env']
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -771,39 +780,39 @@ set noshowmode
 " execute "set rtp+=" . g:opamshare . "/merlin/vim"
 
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+" let s:opam_share_dir = system("opam config var share")
+" let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
 
-let s:opam_configuration = {}
+" let s:opam_configuration = {}
 
-function! OpamConfOcpIndent()
-  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+" function! OpamConfOcpIndent()
+"   execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+" endfunction
+" let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
 
-function! OpamConfOcpIndex()
-  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+" function! OpamConfOcpIndex()
+"   execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+" endfunction
+" let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
 
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+" function! OpamConfMerlin()
+"   let l:dir = s:opam_share_dir . "/merlin/vim"
+"   execute "set rtp+=" . l:dir
+" endfunction
+" let s:opam_configuration['merlin'] = function('OpamConfMerlin')
 
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-for tool in s:opam_packages
-  " Respect package order (merlin should be after ocp-index)
-  if count(s:opam_available_tools, tool) > 0
-    call s:opam_configuration[tool]()
-  endif
-endfor
+" let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+" let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+" let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+" for tool in s:opam_packages
+"   " Respect package order (merlin should be after ocp-index)
+"   if count(s:opam_available_tools, tool) > 0
+"     call s:opam_configuration[tool]()
+"   endif
+" endfor
 
 " ## end of OPAM user-setup addition for vim / base ## keep this line
-let g:ale_linters = {'java': []}
+let g:ale_linters = {'java': [], 'python': []}
 
 " " for normal mode - the word under the cursor
 " nmap <Leader>di <Plug>VimspectorBalloonEval
@@ -892,6 +901,8 @@ dap.configurations.nim = {
   },
 }
 
+require('dap-python').setup('python3')
+
 -- If you want to use this for rust and c, add something like this:
 
 -- dap.configurations.c = dap.configurations.cpp
@@ -905,9 +916,13 @@ EOF
 
 au FileType dap-repl lua require('dap.ext.autocompl').attach()
 
+nnoremap <silent> <ESC> :lua for _, win in ipairs(vim.api.nvim_list_wins()) do local config = vim.api.nvim_win_get_config(win); if config.relative ~= "" then vim.api.nvim_win_close(win, false) end end <ESC>
 nnoremap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>
+" option-o 
 nnoremap <silent> ø :lua require'dap'.step_out()<CR>
+" option-K
 nnoremap <silent> ˚ :lua require'dap'.step_into()<CR>
+" option-J
 nnoremap <silent> ∆ :lua require'dap'.step_over()<CR>
 nnoremap <silent> <leader>ds :lua require'dap'.close()<CR>
 nnoremap <silent> <leader>dn :lua require'dap'.continue()<CR>
@@ -924,7 +939,7 @@ nnoremap <silent> <leader>de :lua require'dap'.set_exception_breakpoints({"all"}
 nnoremap <silent> <leader>da :lua require'debugHelper'.attach()<CR>
 nnoremap <silent> <leader>dA :lua require'debugHelper'.attachToRemote()<CR>
 nnoremap <silent> <leader>di :lua require'dap.ui.widgets'.hover()<CR>
-nnoremap <silent> <leader>q :q<CR>
+nnoremap <silent> <leader>qq :q<CR>
 nnoremap <silent> <leader>d? :lua local widgets=require'dap.ui.widgets';widgets.centered_float(widgets.scopes)<CR>
 
 " Plug 'nvim-telescope/telescope-dap.nvim'
@@ -959,4 +974,19 @@ hi GitSignsAdd ctermfg=green ctermbg=none guibg=#212121 guifg=#32cd32 gui=bold c
 hi GitSignsDelete ctermfg=red ctermbg=none guibg=#212121 guifg=#ff6347 gui=bold cterm=bold
 hi GitSignsChange ctermfg=blue ctermbg=none guibg=#212121 guifg=#1e90ff gui=bold cterm=bold
 
+hi GitSignsAddInline ctermfg=none ctermbg=none guibg=#306C37 guifg=none gui=bold cterm=bold
+hi GitSignsDeleteInline ctermfg=red ctermbg=none guibg=#740009 guifg=none gui=bold cterm=bold
+hi GitSignsChangeInline ctermfg=blue ctermbg=none guibg=#0043AE guifg=none gui=bold cterm=bold
+
+hi GitSignsAddLnInline ctermfg=green ctermbg=none guibg=#306C37 guifg=none gui=bold cterm=bold
+hi GitSignsDeleteLnInline ctermfg=red ctermbg=none guibg=#740009 guifg=none gui=bold cterm=bold
+hi GitSignsChangeLnInline ctermfg=blue ctermbg=none guibg=#0043AE guifg=none gui=bold cterm=bold
+
+hi GitSignsAddVirtLnInline ctermfg=green ctermbg=none guibg=#306C37 guifg=none gui=bold cterm=bold
+hi GitSignsDeleteVirtLnInline ctermfg=red ctermbg=none guibg=#740009 guifg=none gui=bold cterm=bold
+hi GitSignsChangeVirtLnInline ctermfg=blue ctermbg=none guibg=#0043AE guifg=none gui=bold cterm=bold
+
 nmap <F1> :CocCommand java.debug.vimspector.start<CR>
+" nnoremap <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+" \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>

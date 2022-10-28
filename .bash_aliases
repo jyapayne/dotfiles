@@ -6,6 +6,8 @@ export CXX=g++
 alias nv="nvim"
 alias vim="nvim"
 alias did="nvim +'normal Go' +'r!date' ~/Documents/did.txt"
+alias sshvalheim="ssh 10.0.0.241"
+alias sshminecraft="ssh 10.0.0.76"
 
 alias lcat='pygmentize -g -O style=colorful,linenos=1 | grep -P "^\d\d\d\d:"'
 alias ccat='pygmentize -g'
