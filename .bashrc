@@ -177,3 +177,5 @@ export CMAKE_PREFIX_PATH=/opt/homebrew/Cellar/qt\@5/5.15.2
 alias sshkvm4g="ssh root@172.111.1.101"
 alias sshkvm2g="ssh root@172.111.1.102"
 . "$HOME/.cargo/env"
+
+[ -f "/Users/joey/.ghcup/env" ] && source "/Users/joey/.ghcup/env" # ghcup-env

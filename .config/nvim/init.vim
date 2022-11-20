@@ -901,7 +901,7 @@ dap.configurations.nim = {
   },
 }
 
-require('dap-python').setup('python3')
+require('dap-python').setup('/opt/homebrew/bin/python3')
 
 -- If you want to use this for rust and c, add something like this:
 

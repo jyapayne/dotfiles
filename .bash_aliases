@@ -1,6 +1,11 @@
 # User specific aliases and functions:
 # alias vim="/usr/bin/vim.gtk"
-alias ls="ls -h --color=auto"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
+    alias ls="ls -G"
+else
+    alias ls="ls -h --color=auto"
+fi
 export CC=gcc
 export CXX=g++
 alias nv="nvim"

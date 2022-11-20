@@ -5,6 +5,7 @@
 	email = jyapayne@gmail.com
 [core]
 	editor = nvim
+	autocrlf = input
 [pull]
 	rebase = false
 [color]
