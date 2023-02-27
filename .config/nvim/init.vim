@@ -1,7 +1,6 @@
 
 
 call plug#begin('~/.local/share/nvim/plugged')
-Plug 'wjsetzer/freepascal-vim'
 Plug 'rust-lang/rust.vim'
 Plug 'jyapayne/nim.vim'
 Plug 'tpope/vim-fugitive'
@@ -16,7 +15,7 @@ Plug 'hdima/python-syntax'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'mxw/vim-jsx'
 Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'johnstef99/vim-nerdtree-syntax-highlight'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'vim-scripts/errormarker.vim'
@@ -54,7 +53,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'jremmen/vim-ripgrep'
 Plug 'rescript-lang/vim-rescript'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 Plug 'kassio/neoterm'
 Plug 'reasonml-editor/vim-reason-plus'
 Plug 'jyapayne/vim-code-dark'
@@ -86,7 +85,10 @@ call plug#end()
 " map <ESC>[1;5C <C-Right>
 " map <ESC>[1;5D <C-Left>
 nnoremap gm m
+nnoremap <Tab> <C-w>w
 let g:ale_shell="/bin/bash"
+let g:lsp_log_verbose = 1
+let g:lsp_log_file = expand('/tmp/vim-lsp.log')
 
 " Live updating substitution!
 set inccommand=nosplit
@@ -98,7 +100,7 @@ let maplocalleader = "\<Space>"
 let g:syntastic_c_compiler_options = "-std=c99"
 set guicursor=
 
-inoremap vmark âœ“
+" inoremap vmark âœ“
 
 augroup Binary
   au!
@@ -603,16 +605,18 @@ else
 endif
 au FileType python let b:coc_root_patterns = ['.git', '.env', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'env']
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
@@ -624,10 +628,6 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -765,7 +765,12 @@ highlight SignColumn ctermbg=darkgrey guibg=#212121
 " highlight TabLineFill guibg=none guifg=none gui=none
 " highlight TabLineSel guibg=#353535 guifg=none
 " highlight TabLine guibg=none guifg=none
-highlight CocHighlightText ctermbg=lightblue guibg=#002c4b
+highlight CocFadeOut ctermfg=lightgrey guifg=#8B8C92
+highlight CocHintVirtualText guifg=blue ctermbg=none guibg=none
+highlight CocHintHighlight guifg=blue ctermbg=none guibg=none
+highlight CocHintSign guifg=#647644 ctermfg=lightblue ctermbg=darkgrey guibg=#212121
+highlight CocErrorSign guifg=red ctermfg=red ctermbg=darkgrey guibg=#212121
+highlight CocInlayHint guifg=#3D7671 ctermfg=lightblue ctermbg=darkgrey guibg=none
 
 
 hi Normal ctermbg=none guibg=none
@@ -990,3 +995,7 @@ nmap <F1> :CocCommand java.debug.vimspector.start<CR>
 " nnoremap <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 " \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 " \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+
+" Nim: replace comment above with comment below
+let @t = '/^proc ?^\_[\n]##V/\_[€kb€kb€kb^\_[\n\€kb]prc€kboc m/\.}pdd'

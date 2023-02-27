@@ -2,7 +2,7 @@
 [user]
 # Please adapt and uncomment the following lines:
 	name = Joey Yakimowich-Payne
-	email = jyapayne@gmail.com
+	email = jyapayne@pm.me
 [core]
 	editor = nvim
 	autocrlf = input
@@ -21,3 +21,5 @@
     # (better for interactive use)
     stat = !bash -c 'source $HOME/.bashrc && git diff --stat $(git merge-base HEAD \"$(git basebranch)\")'
     review = !nvim -p $(git files) +\"tabdo Gdiff $(git basebranch)\" +\"let g:gitgutter_diff_base = '$(git basebranch)'\"
+[commit]
+	gpgsign = true
