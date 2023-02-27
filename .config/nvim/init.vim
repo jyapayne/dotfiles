@@ -76,6 +76,9 @@ Plug 'mfussenegger/nvim-dap-python'
 Plug 'KabbAmine/vCoolor.vim'
 " Plug 'chrisbra/Colorizer'
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'edluffy/hologram.nvim'
+Plug 'hashivim/vim-terraform'
+Plug 'fatih/vim-go'
 
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
@@ -605,6 +608,11 @@ else
 endif
 au FileType python let b:coc_root_patterns = ['.git', '.env', 'venv', '.venv', 'setup.cfg', 'setup.py', 'pyrightconfig.json', 'env']
 
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
       \ CheckBackspace() ? "\<Tab>" :
@@ -771,6 +779,7 @@ highlight CocHintHighlight guifg=blue ctermbg=none guibg=none
 highlight CocHintSign guifg=#647644 ctermfg=lightblue ctermbg=darkgrey guibg=#212121
 highlight CocErrorSign guifg=red ctermfg=red ctermbg=darkgrey guibg=#212121
 highlight CocInlayHint guifg=#3D7671 ctermfg=lightblue ctermbg=darkgrey guibg=none
+highlight CocHighlightText ctermbg=lightblue guibg=#002c4b
 
 
 hi Normal ctermbg=none guibg=none
@@ -828,17 +837,58 @@ let g:ale_linters = {'java': [], 'python': []}
 " nnoremap <leader><space> :GFiles<CR>
 
 " nvim-telescope/telescope.nvim
+
 lua << EOF
+require('hologram').setup{
+    auto_display = true -- WIP automatic markdown image display, may be prone to breaking
+}
 _G.telescope_find_files_in_path = function(path)
  local _path = path or vim.fn.input("Dir: ", "", "dir")
  require("telescope.builtin").find_files({search_dirs = {_path}})
 end
 EOF
+
 lua << EOF
 _G.telescope_live_grep_in_path = function(path)
  local _path = path or vim.fn.input("Dir: ", "", "dir")
  require("telescope.builtin").live_grep({search_dirs = {_path}})
 end
+EOF
+
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the four listed parsers should always be installed)
+  ensure_installed = { "c", "lua", "vim", "help", "go" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  -- List of parsers to ignore installing (for "all")
+  ignore_install = { },
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  highlight = {
+    enable = true,
+
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    disable = { },
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
 EOF
 
 let b:current_syntax = 'nim'
@@ -918,6 +968,12 @@ vim.fn.sign_define('DapBreakpointRejected', {text='●', texthl='LineNr', linehl
 vim.fn.sign_define('DapLogPoint', {text='L', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapStopped', {text='→', texthl='WarningMsg', linehl='debugPC', numhl=''})
 EOF
+
+function! SynGroup()
+    let l:s = synID(line('.'), col('.'), 1)
+    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+endfun
+
 
 au FileType dap-repl lua require('dap.ext.autocompl').attach()
 
