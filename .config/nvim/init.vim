@@ -763,7 +763,7 @@ filetype on
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
 
 highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
-highlight OverLength ctermbg=red ctermfg=black guibg=#592929 gui=bold
+" highlight OverLength ctermbg=red ctermfg=black guibg=#592929 gui=bold
 
 highlight ALEError ctermbg=red guibg=#700000
 highlight ALEErrorSign ctermfg=none ctermbg=black guifg=red guibg=#212121
@@ -774,8 +774,8 @@ highlight SignColumn ctermbg=darkgrey guibg=#212121
 " highlight TabLineSel guibg=#353535 guifg=none
 " highlight TabLine guibg=none guifg=none
 highlight CocFadeOut ctermfg=lightgrey guifg=#8B8C92
-highlight CocHintVirtualText guifg=blue ctermbg=none guibg=none
-highlight CocHintHighlight guifg=blue ctermbg=none guibg=none
+" highlight CocHintVirtualText guifg=blue ctermbg=none guibg=none
+" highlight CocHintHighlight guifg=blue ctermbg=none guibg=none
 highlight CocHintSign guifg=#647644 ctermfg=lightblue ctermbg=darkgrey guibg=#212121
 highlight CocErrorSign guifg=red ctermfg=red ctermbg=darkgrey guibg=#212121
 highlight CocInlayHint guifg=#3D7671 ctermfg=lightblue ctermbg=darkgrey guibg=none
