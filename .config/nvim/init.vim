@@ -101,7 +101,7 @@ let mapleader = "\<Space>"
 let maplocalleader = "\<Space>"
 
 let g:syntastic_c_compiler_options = "-std=c99"
-set guicursor=
+set guicursor=v-c-sm:block,n-i-ci-ve:ver25,r-cr-o:hor20
 
 " inoremap vmark âœ“
 
@@ -568,14 +568,13 @@ endif
 nnoremap <silent> K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 set switchbuf+=usetab,newtab
 
+
 autocmd FileType rescript nnoremap <silent> <buffer> <localleader>r :RescriptFormat<CR>
 autocmd FileType rescript nnoremap <silent> <buffer> <localleader>t :RescriptTypeHint<CR>
 autocmd FileType rescript nnoremap <silent> <buffer> <localleader>b :RescriptBuild<CR>
 autocmd FileType rescript nnoremap <silent> <buffer> gd :RescriptJumpToDefinition<CR>
 
 let g:asyncomplete_auto_completeopt=0
-
-
 
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
 " unicode characters in the file autoload/float.vim
@@ -858,7 +857,7 @@ EOF
 lua << EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the four listed parsers should always be installed)
-  ensure_installed = { "c", "lua", "vim", "help", "go" },
+  ensure_installed = { "c", "lua", "vim", "help", "go", "python" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -880,7 +879,7 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = { },
+    disable = { "python", "nim" },
 
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -1055,3 +1054,5 @@ nmap <F1> :CocCommand java.debug.vimspector.start<CR>
 
 " Nim: replace comment above with comment below
 let @t = '/^proc ?^\_[\n]##V/\_[€kb€kb€kb^\_[\n\€kb]prc€kboc m/\.}pdd'
+let &t_SI = "\e[5 q"
+let &t_EI = "\e[2 q"
