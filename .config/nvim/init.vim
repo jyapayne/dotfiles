@@ -1,4 +1,6 @@
-
+lua << EOF
+  vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+EOF
 
 call plug#begin('~/.local/share/nvim/plugged')
 Plug 'rust-lang/rust.vim'
@@ -22,9 +24,12 @@ Plug 'vim-scripts/errormarker.vim'
 Plug 'elixir-lang/vim-elixir'
 Plug 'jreybert/vim-largefile'
 Plug 'sbdchd/neoformat'
-Plug 'tpope/vim-obsession'
-Plug 'dhruvasagar/vim-prosession'
+Plug 'tikhomirov/vim-glsl'
+Plug 'svermeulen/vim-easyclip'
+" Plug 'tpope/vim-obsession'
+" Plug 'dhruvasagar/vim-prosession'
 Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'rmagatti/auto-session'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " Plug 'vim-syntastic/syntastic'
@@ -48,7 +53,6 @@ Plug 'kana/vim-textobj-line'
 Plug 'Julian/vim-textobj-brace'
 Plug 'bps/vim-textobj-python'
 Plug 'wellle/targets.vim'
-Plug 'svermeulen/vim-easyclip'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'jremmen/vim-ripgrep'
@@ -68,8 +72,10 @@ Plug 'sindrets/diffview.nvim', {'branch': 'main'}
 Plug 'lewis6991/gitsigns.nvim', {'branch': 'main'}
 Plug 'peterhoeg/vim-qml'
 Plug 'mfussenegger/nvim-dap'
+Plug 'posva/vim-vue'
 " Plug 'rcarriga/nvim-dap-ui'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" Plug 'nvim-treesitter/playground'
 Plug 'nvim-telescope/telescope-dap.nvim'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'mfussenegger/nvim-dap-python'
@@ -77,11 +83,13 @@ Plug 'KabbAmine/vCoolor.vim'
 " Plug 'chrisbra/Colorizer'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'edluffy/hologram.nvim'
-Plug 'hashivim/vim-terraform'
 Plug 'fatih/vim-go'
+Plug 'folke/trouble.nvim'
+
 
 "Plug 'baabelfish/nvim-nim'
 call plug#end()
+let g:EasyClipUseGlobalPasteToggle = 0
 
 " map <ESC>[1;5A <C-Up>
 " map <ESC>[1;5B <C-Down>
@@ -177,6 +185,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 let g:NERDTreeDirArrowExpandable = 'â–¸'
 let g:NERDTreeDirArrowCollapsible = 'â–¾'
 autocmd Filetype nim setlocal ts=2 sts=2 sw=2 expandtab
+autocmd Filetype ts setlocal ts=2 sts=2 sw=2 expandtab
+autocmd Filetype vue setlocal ts=2 sts=2 sw=2 expandtab
 autocmd Filetype less setlocal ts=2 sts=2 sw=2 expandtab
 autocmd Filetype css setlocal ts=2 sts=2 sw=2 expandtab
 let g:syntastic_javascript_checkers = ['eslint', 'flow']
@@ -226,7 +236,7 @@ nmap =j :%!python3 -m json.tool<CR>
 
 if !exists("autocommands_loaded")
   let autocommands_loaded = 1
-  autocmd BufRead,BufNewFile,FileReadPost *.py source ~/.vim/python
+  " autocmd BufRead,BufNewFile,FileReadPost *.py source ~/.vim/python
 endif
 au BufRead,BufNewFile *.shpaml setfiletype shpaml
 
@@ -303,10 +313,18 @@ let g:ctrlp_prompt_mappings = {
 noremap Ë™ gT
 noremap Â¬ gt
 
+noremap <M-h> gT
+noremap <M-l> gt
+
+
+
 " inoremap Ëš <Esc>:tabr<cr>i
 " inoremap âˆ† <Esc>:tabl<cr>i
 inoremap Ë™ <Esc>gTi
 inoremap Â¬ <Esc>gti
+
+inoremap <M-h> <Esc>gTi
+inoremap <M-l> <Esc>gti
 
 set clipboard=
 let g:EasyClipShareYanks = 1
@@ -325,9 +343,7 @@ let g:gitsigns_head = "main"
 
 " lewis6991/gitsigns.nvim
 lua << EOF
- require('gitsigns').setup({
-     \ word_diff = true
-   \ })
+ require('gitsigns').setup({word_diff = true })
 EOF
 
 " let g:vimspector_install_gadgets = [ 'debugpy', 'vscode-cpptools', 'CodeLLDB' ]
@@ -502,29 +518,6 @@ exe 'hi htmlSpecialTagName guifg='s:keyword
 exe 'hi mkdCode guifg='s:builtin
 
 
-" au User asyncomplete_setup call asyncomplete#register_source({
-"     \ 'name': 'nim',
-"     \ 'whitelist': ['nim'],
-"     \ 'triggers': {'nim': ['.'] },
-"     \ 'completor': {opt, ctx -> nim#suggest#sug#GetAllCandidates({start, candidates -> asyncomplete#complete(opt['name'], ctx, start, candidates)})}
-"     \ })
-
-" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
-" imap <silent> . .<Plug>(asyncomplete_force_refresh)
-
-" let g:asyncomplete_auto_popup = 0
-
-" function! s:check_back_space() abort
-"     let col = col('.') - 1
-"     return !col || getline('.')[col - 1]  =~ '\s'
-" endfunction
-
-" inoremap <silent><expr> <TAB>
-"   \ pumvisible() ? "\<C-n>" :
-"   \ <SID>check_back_space() ? "\<TAB>" :
-"   \ asyncomplete#force_refresh()
 
 "inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -579,6 +572,8 @@ let g:asyncomplete_auto_completeopt=0
 " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
 " unicode characters in the file autoload/float.vim
 set encoding=utf-8
+set nobackup
+set nowritebackup
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -825,7 +820,7 @@ set noshowmode
 " endfor
 
 " ## end of OPAM user-setup addition for vim / base ## keep this line
-let g:ale_linters = {'java': [], 'python': []}
+let g:ale_linters = {'java': [], 'python': [], 'typescript': []}
 
 " " for normal mode - the word under the cursor
 " nmap <Leader>di <Plug>VimspectorBalloonEval
@@ -857,7 +852,7 @@ EOF
 lua << EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the four listed parsers should always be installed)
-  ensure_installed = { "c", "lua", "vim", "help", "go", "python" },
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "go" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -887,19 +882,41 @@ require'nvim-treesitter.configs'.setup {
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
   },
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false, -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
+    },
+  }
+}
+require('auto-session').setup {
+    auto_save_enabled = true,
+    auto_restore_enabled = true
 }
 EOF
 
 let b:current_syntax = 'nim'
 
-nnoremap <leader><space> :Telescope git_files<CR>
+nnoremap <leader><space> :Telescope find_files<CR>
 nnoremap <leader>fd :lua telescope_find_files_in_path()<CR>
 nnoremap <leader>fD :lua telescope_live_grep_in_path()<CR>
 nnoremap <leader>ft :lua telescope_find_files_in_path("./tests")<CR>
 nnoremap <leader>fT :lua telescope_live_grep_in_path("./tests")<CR>
 " nnoremap <leader>ff :Telescope live_grep<CR>
 nnoremap <leader>fo :Telescope file_browser<CR>
-nnoremap <leader>fn :Telescope find_files<CR>
+nnoremap <leader>fn :Telescope git_files<CR>
 nnoremap <leader>fg :Telescope git_branches<CR>
 nnoremap <leader>fb :Telescope buffers<CR>
 nnoremap <leader>fs :Telescope lsp_document_symbols<CR>
@@ -1056,3 +1073,8 @@ nmap <F1> :CocCommand java.debug.vimspector.start<CR>
 let @t = '/^proc ?^\_[\n]##V/\_[€kb€kb€kb^\_[\n\€kb]prc€kboc m/\.}pdd'
 let &t_SI = "\e[5 q"
 let &t_EI = "\e[2 q"
+
+au FileType vue let b:coc_root_patterns = ['.git', '.env', 'package.json', 'tsconfig.json', 'jsconfig.json', 'vite.config.ts', 'vite.config.js', 'vue.config.js', 'nuxt.config.ts']
+
+autocmd Filetype typescript setlocal ts=2 sts=2 sw=2 expandtab
+autocmd Filetype vue setlocal ts=2 sts=2 sw=2 expandtab
