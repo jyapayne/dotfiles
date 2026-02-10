@@ -229,8 +229,7 @@ command C let @/=""
 command CC :%s#_\(\l\)#\u\1#g
 command U :%s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g
 
-map <Leader>y "*y
-map <Leader>p "*p
+" clipboard mappings moved to end of file
 
 nmap =j :%!python3 -m json.tool<CR>
 
@@ -326,7 +325,7 @@ inoremap Â¬ <Esc>gti
 inoremap <M-h> <Esc>gTi
 inoremap <M-l> <Esc>gti
 
-set clipboard=
+set clipboard=unnamedplus
 let g:EasyClipShareYanks = 1
 
 
@@ -1070,7 +1069,7 @@ nmap <F1> :CocCommand java.debug.vimspector.start<CR>
 
 
 " Nim: replace comment above with comment below
-let @t = '/^proc ?^\_[\n]##V/\_[€kb€kb€kb^\_[\n\€kb]prc€kboc m/\.}pdd'
+let @t = '/^proc ?^\_[\n]##V/\_[ï¿½kbï¿½kbï¿½kb^\_[\n\ï¿½kb]prcï¿½kboc m/\.}pdd'
 let &t_SI = "\e[5 q"
 let &t_EI = "\e[2 q"
 
@@ -1078,3 +1077,40 @@ au FileType vue let b:coc_root_patterns = ['.git', '.env', 'package.json', 'tsco
 
 autocmd Filetype typescript setlocal ts=2 sts=2 sw=2 expandtab
 autocmd Filetype vue setlocal ts=2 sts=2 sw=2 expandtab
+
+" init.vim
+
+set termguicolors
+set cursorline
+
+function! s:SetTransparent() abort
+  for g in [
+        \ 'Normal', 'NormalNC', 'SignColumn', 'EndOfBuffer', 'FoldColumn',
+        \ 'LineNr', 'MsgArea', 'CursorLine', 'CursorLineNr',
+        \ 'StatusLine', 'StatusLineNC', 'WinSeparator', 'VertSplit',
+        \ 'NormalFloat', 'FloatBorder'
+        \ ]
+    execute 'hi ' . g . ' ctermbg=NONE guibg=NONE'
+  endfor
+endfunction
+
+augroup TransparentUI
+  autocmd!
+  autocmd ColorScheme * call s:SetTransparent()
+augroup END
+
+call s:SetTransparent()
+
+set cursorline
+set cursorlineopt=line
+
+hi CursorLine guibg=NONE ctermbg=NONE gui=bold cterm=bold
+" Bold + undercurl (very subtle if your terminal supports it)
+set cursorline
+set cursorlineopt=line
+hi CursorLine guibg=NONE ctermbg=NONE gui=bold,undercurl cterm=bold guisp=#777777
+
+nmap <leader>y "+y
+vmap <leader>y "+y
+nmap <leader>p "+p
+vmap <leader>p "+p

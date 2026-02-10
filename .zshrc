@@ -63,5 +63,3 @@ HISTFILE=$HOME/.zsh_history
 setopt APPEND_HISTORY INC_APPEND_HISTORY SHARE_HISTORY
 
 export TERM=xterm-256color
-
-. "$HOME/.langflow/uv/env"
