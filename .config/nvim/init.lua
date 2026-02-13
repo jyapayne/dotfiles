@@ -90,9 +90,7 @@ require("lazy").setup({
   { "wellle/targets.vim" },
   {
     "junegunn/fzf",
-    build = function()
-      vim.fn["fzf#install"]()
-    end,
+    build = "./install --bin",
   },
   { "junegunn/fzf.vim" },
   { "jremmen/vim-ripgrep" },
