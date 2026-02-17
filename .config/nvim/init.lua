@@ -402,6 +402,9 @@ vim.g.syntastic_enable_elixir_checker = 1
 vim.g.syntastic_elixir_checkers = { "elixir" }
 vim.g.LargeFile = 20
 vim.g.airline_powerline_fonts = 1
+local airline_symbols = vim.g.airline_symbols or {}
+airline_symbols.branch = "\u{e0a0}"
+vim.g.airline_symbols = airline_symbols
 vim.g.airline_section_x = ""
 vim.g.airline_section_y = ""
 vim.g.airline_section_warning = ""
@@ -1031,4 +1034,4 @@ vim.cmd("hi GitSignsChangeVirtLnInline ctermfg=blue ctermbg=none guibg=#0043AE g
 -- Colorscheme application
 pcall(vim.cmd, "colorscheme codedark")
 _G.SetTransparent()
-vim.cmd("hi CursorLine guibg=NONE ctermbg=NONE gui=bold,undercurl cterm=bold guisp=#777777")
+vim.cmd("hi CursorLine guibg=NONE ctermbg=NONE gui=bold cterm=bold guisp=#777777")
