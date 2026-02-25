@@ -111,10 +111,24 @@ else
 fi
 
 log "Sending snapshot to backup drive..."
+
+# Estimate size for progress display (btrfs send streams uncompressed,
+# so use disk usage as a rough lower bound)
+SNAP_SIZE=$(btrfs filesystem du -s --raw "$BTRFS_TOP/$SNAP_DIR/$SNAP_NAME" 2>/dev/null \
+    | awk 'NR==2 {print $1}')
+
 # shellcheck disable=SC2086
-btrfs send $PARENT_FLAG "$BTRFS_TOP/$SNAP_DIR/$SNAP_NAME" \
-    | btrfs receive "$BACKUP_MOUNT/backups/" \
-    || die "btrfs send/receive failed"
+if command -v pv &>/dev/null && [ -n "$SNAP_SIZE" ] && [ "$SNAP_SIZE" -gt 0 ] 2>/dev/null; then
+    log "Estimated snapshot size: $(numfmt --to=iec "$SNAP_SIZE")"
+    btrfs send $PARENT_FLAG "$BTRFS_TOP/$SNAP_DIR/$SNAP_NAME" \
+        | pv -pterab -s "$SNAP_SIZE" \
+        | btrfs receive "$BACKUP_MOUNT/backups/" \
+        || die "btrfs send/receive failed"
+else
+    btrfs send $PARENT_FLAG "$BTRFS_TOP/$SNAP_DIR/$SNAP_NAME" \
+        | btrfs receive "$BACKUP_MOUNT/backups/" \
+        || die "btrfs send/receive failed"
+fi
 
 log "Snapshot sent successfully"
 

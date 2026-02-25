@@ -207,8 +207,21 @@ full_restore() {
     echo "Receiving snapshot from backup drive..."
     local restore_name="home-restoring-$(date +%Y%m%d-%H%M%S)"
 
-    btrfs send "$snap_path" | btrfs receive "$BTRFS_TOP/snapshots/" \
-        || die "btrfs receive failed"
+    # Estimate size for progress display (btrfs send streams uncompressed,
+    # so use disk usage as a rough lower bound)
+    local snap_size
+    snap_size=$(btrfs filesystem du -s --raw "$snap_path" 2>/dev/null \
+        | awk 'NR==2 {print $1}')
+
+    if command -v pv &>/dev/null && [ -n "$snap_size" ] && [ "$snap_size" -gt 0 ] 2>/dev/null; then
+        echo "Estimated snapshot size: $(numfmt --to=iec "$snap_size")"
+        btrfs send "$snap_path" | pv -pterab -s "$snap_size" \
+            | btrfs receive "$BTRFS_TOP/snapshots/" \
+            || die "btrfs receive failed"
+    else
+        btrfs send "$snap_path" | btrfs receive "$BTRFS_TOP/snapshots/" \
+            || die "btrfs receive failed"
+    fi
 
     # The received snapshot is read-only. Create a writable snapshot from it.
     echo "Creating writable home from snapshot..."
