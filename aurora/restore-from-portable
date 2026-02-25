@@ -1,0 +1,352 @@
+#!/bin/bash
+# =============================================================================
+# Restore from Portable Backup Drive
+# Browse snapshots, mount for file recovery, or full home restore
+# =============================================================================
+set -euo pipefail
+
+# --- Configuration ---
+LUKS_DEVICE="/dev/disk/by-id/usb-Seagate_Portable_NT3D9HDX-0:0-part1"
+LUKS_KEYFILE="/etc/backup-drive.key"
+LUKS_NAME="backup-drive"
+BACKUP_MOUNT="/mnt/backup-drive"
+BTRFS_DEVICE="/dev/nvme0n1p3"
+BTRFS_TOP="/mnt/btrfs-root"
+BROWSE_MOUNT="/mnt/backup-browse"
+
+# --- Helpers ---
+bold()  { echo -e "\033[1m$*\033[0m"; }
+green() { echo -e "\033[32m$*\033[0m"; }
+red()   { echo -e "\033[31m$*\033[0m"; }
+yellow(){ echo -e "\033[33m$*\033[0m"; }
+
+die() { red "ERROR: $*"; exit 1; }
+
+cleanup() {
+    mountpoint -q "$BROWSE_MOUNT" 2>/dev/null && umount "$BROWSE_MOUNT" 2>/dev/null || true
+    # Don't auto-close LUKS/unmount backup in restore mode — user may still need it
+}
+trap cleanup EXIT
+
+# --- Preflight ---
+[ "$(id -u)" -eq 0 ] || die "Must run as root (sudo)"
+[ -e "$LUKS_DEVICE" ] || die "Backup drive not connected"
+
+# --- Open LUKS + Mount ---
+if [ ! -e "/dev/mapper/$LUKS_NAME" ]; then
+    echo "Opening LUKS volume..."
+    if [ -f "$LUKS_KEYFILE" ]; then
+        cryptsetup luksOpen --key-file "$LUKS_KEYFILE" "$LUKS_DEVICE" "$LUKS_NAME"
+    else
+        echo "Keyfile not found. Enter passphrase:"
+        cryptsetup luksOpen "$LUKS_DEVICE" "$LUKS_NAME"
+    fi
+fi
+
+mkdir -p "$BACKUP_MOUNT"
+if ! mountpoint -q "$BACKUP_MOUNT"; then
+    mount /dev/mapper/"$LUKS_NAME" "$BACKUP_MOUNT"
+fi
+
+# --- List snapshots ---
+list_snapshots() {
+    bold "\nAvailable backup snapshots:"
+    echo "─────────────────────────────────────────"
+    local i=1
+    mapfile -t SNAPSHOTS < <(ls -1d "$BACKUP_MOUNT/backups"/home-* 2>/dev/null | sort -r)
+
+    if [ ${#SNAPSHOTS[@]} -eq 0 ]; then
+        die "No snapshots found on backup drive"
+    fi
+
+    for snap in "${SNAPSHOTS[@]}"; do
+        local name date_str
+        name=$(basename "$snap")
+        # Parse timestamp from name: home-YYYYMMDD-HHMMSS
+        date_str=$(echo "$name" | sed 's/home-//' | sed 's/\([0-9]\{8\}\)-\([0-9]\{2\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)/\1 \2:\3:\4/')
+        printf "  %2d) %s  (%s)\n" "$i" "$name" "$date_str"
+        ((i++))
+    done
+    echo ""
+}
+
+# --- Show metadata for a snapshot ---
+show_metadata() {
+    local snap_name="$1"
+    local ts="${snap_name#home-}"
+    local meta_dir="$BACKUP_MOUNT/metadata/$ts"
+
+    if [ -d "$meta_dir" ]; then
+        bold "\nMetadata for $snap_name:"
+        echo "─────────────────────────────────────────"
+        [ -f "$meta_dir/info.txt" ] && echo "  Host: $(cat "$meta_dir/info.txt")"
+        [ -f "$meta_dir/flatpak-apps.txt" ] && echo "  Flatpaks: $(wc -l < "$meta_dir/flatpak-apps.txt") apps"
+        [ -f "$meta_dir/layered-packages.txt" ] && echo "  Layered pkgs: $(cat "$meta_dir/layered-packages.txt" | grep -c . || echo 0)"
+        [ -f "$meta_dir/etc-backup.tar.gz" ] && echo "  /etc backup: $(du -h "$meta_dir/etc-backup.tar.gz" | cut -f1)"
+        echo ""
+    else
+        yellow "  (no metadata for this snapshot)"
+    fi
+}
+
+# --- Browse a snapshot (mount read-only) ---
+browse_snapshot() {
+    local snap_path="$1"
+    local snap_name
+    snap_name=$(basename "$snap_path")
+
+    mkdir -p "$BROWSE_MOUNT"
+    if mountpoint -q "$BROWSE_MOUNT"; then
+        umount "$BROWSE_MOUNT"
+    fi
+
+    # Bind-mount the snapshot for easy browsing
+    mount --bind "$snap_path" "$BROWSE_MOUNT"
+
+    green "\nSnapshot mounted read-only at: $BROWSE_MOUNT"
+    echo ""
+    echo "You can now browse and copy files:"
+    echo "  ls $BROWSE_MOUNT/"
+    echo "  cp $BROWSE_MOUNT/joey/Documents/file.txt ~/Documents/"
+    echo ""
+    yellow "When done, run: sudo umount $BROWSE_MOUNT"
+    echo "Or press Enter here to unmount and return to menu."
+    read -r
+    umount "$BROWSE_MOUNT" 2>/dev/null || true
+}
+
+# --- Restore specific files/directories ---
+restore_files() {
+    local snap_path="$1"
+    local snap_name
+    snap_name=$(basename "$snap_path")
+
+    echo ""
+    bold "Restore files from $snap_name"
+    echo "Enter path relative to home (e.g., joey/Documents, joey/.config/Code):"
+    read -r rel_path
+
+    [ -z "$rel_path" ] && { yellow "No path entered."; return; }
+
+    local src="$snap_path/$rel_path"
+    if [ ! -e "$src" ]; then
+        red "Path not found in snapshot: $rel_path"
+        return
+    fi
+
+    local dest_base="/var/home"
+    local dest="$dest_base/$rel_path"
+
+    echo ""
+    echo "Source:      $src"
+    echo "Destination: $dest"
+    echo ""
+
+    if [ -e "$dest" ]; then
+        yellow "WARNING: Destination exists and will be overwritten."
+        echo -n "Create backup of current version first? [Y/n] "
+        read -r yn
+        if [ "$yn" != "n" ] && [ "$yn" != "N" ]; then
+            local backup="${dest}.pre-restore-$(date +%Y%m%d-%H%M%S)"
+            cp -a "$dest" "$backup"
+            green "Current version backed up to: $backup"
+        fi
+    fi
+
+    echo -n "Proceed with restore? [y/N] "
+    read -r confirm
+    if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+        if [ -d "$src" ]; then
+            mkdir -p "$(dirname "$dest")"
+            rsync -a --delete "$src/" "$dest/"
+        else
+            mkdir -p "$(dirname "$dest")"
+            cp -a "$src" "$dest"
+        fi
+        # Restore ownership to joey
+        chown -R joey:joey "$dest"
+        green "Restored: $rel_path"
+    else
+        yellow "Cancelled."
+    fi
+}
+
+# --- Full home restore via btrfs send/receive ---
+full_restore() {
+    local snap_path="$1"
+    local snap_name
+    snap_name=$(basename "$snap_path")
+
+    echo ""
+    red "╔══════════════════════════════════════════════════════╗"
+    red "║  FULL HOME RESTORE — THIS IS DESTRUCTIVE            ║"
+    red "║  Your current /var/home will be replaced entirely.   ║"
+    red "║  A snapshot of the current state will be saved.      ║"
+    red "╚══════════════════════════════════════════════════════╝"
+    echo ""
+    echo "Restoring from: $snap_name"
+    echo ""
+    echo -n "Type 'RESTORE' to confirm: "
+    read -r confirm
+    [ "$confirm" = "RESTORE" ] || { yellow "Cancelled."; return; }
+
+    # Mount top-level BTRFS
+    mkdir -p "$BTRFS_TOP"
+    if ! mountpoint -q "$BTRFS_TOP"; then
+        mount -o subvolid=5 "$BTRFS_DEVICE" "$BTRFS_TOP"
+    fi
+
+    # Snapshot current home as safety net
+    local safety_name="home-pre-restore-$(date +%Y%m%d-%H%M%S)"
+    echo "Creating safety snapshot of current home: $safety_name"
+    btrfs subvolume snapshot -r "$BTRFS_TOP/home" "$BTRFS_TOP/snapshots/$safety_name"
+    green "Safety snapshot created: $safety_name"
+
+    # Strategy: receive the backup snapshot, then swap subvolumes
+    echo "Receiving snapshot from backup drive..."
+    local restore_name="home-restoring-$(date +%Y%m%d-%H%M%S)"
+
+    btrfs send "$snap_path" | btrfs receive "$BTRFS_TOP/snapshots/" \
+        || die "btrfs receive failed"
+
+    # The received snapshot is read-only. Create a writable snapshot from it.
+    echo "Creating writable home from snapshot..."
+
+    # Rename current home subvolume out of the way
+    mv "$BTRFS_TOP/home" "$BTRFS_TOP/home-old-$(date +%Y%m%d-%H%M%S)"
+
+    # Create writable snapshot as new home
+    btrfs subvolume snapshot "$BTRFS_TOP/snapshots/$snap_name" "$BTRFS_TOP/home"
+
+    green ""
+    green "═══════════════════════════════════════════"
+    green "  Full restore complete!"
+    green "  Old home saved as: home-old-*"
+    green "  REBOOT to use restored home."
+    green "═══════════════════════════════════════════"
+    echo ""
+    yellow "After reboot, once verified, clean up old home with:"
+    echo "  sudo mount -o subvolid=5 /dev/nvme0n1p3 /mnt/btrfs-root"
+    echo "  sudo btrfs subvolume delete /mnt/btrfs-root/home-old-*"
+    echo ""
+
+    umount "$BTRFS_TOP" 2>/dev/null || true
+}
+
+# --- Restore system metadata ---
+restore_metadata() {
+    local snap_name="$1"
+    local ts="${snap_name#home-}"
+    local meta_dir="$BACKUP_MOUNT/metadata/$ts"
+
+    [ -d "$meta_dir" ] || { red "No metadata found for $snap_name"; return; }
+
+    bold "\nRestore system metadata from $snap_name"
+    echo "─────────────────────────────────────────"
+    echo "  1) Reinstall flatpak apps"
+    echo "  2) Reinstall layered rpm-ostree packages"
+    echo "  3) Restore /etc from backup"
+    echo "  4) Show all metadata (view only)"
+    echo "  b) Back"
+    echo ""
+    echo -n "Choice: "
+    read -r choice
+
+    case "$choice" in
+        1)
+            if [ -f "$meta_dir/flatpak-apps.txt" ]; then
+                echo "Installing flatpak apps..."
+                while IFS= read -r app; do
+                    [ -z "$app" ] && continue
+                    echo "  Installing: $app"
+                    flatpak install -y flathub "$app" 2>/dev/null || yellow "  Failed: $app"
+                done < "$meta_dir/flatpak-apps.txt"
+                green "Done."
+            fi
+            ;;
+        2)
+            if [ -f "$meta_dir/layered-packages.txt" ] && [ -s "$meta_dir/layered-packages.txt" ]; then
+                echo "Layered packages to install:"
+                cat "$meta_dir/layered-packages.txt"
+                echo ""
+                echo -n "Install all? [y/N] "
+                read -r yn
+                if [ "$yn" = "y" ] || [ "$yn" = "Y" ]; then
+                    # shellcheck disable=SC2046
+                    rpm-ostree install $(cat "$meta_dir/layered-packages.txt" | tr '\n' ' ')
+                    yellow "Reboot required to apply layered packages."
+                fi
+            else
+                yellow "No layered packages recorded."
+            fi
+            ;;
+        3)
+            if [ -f "$meta_dir/etc-backup.tar.gz" ]; then
+                red "WARNING: This will overwrite files in /etc"
+                echo -n "Proceed? [y/N] "
+                read -r yn
+                if [ "$yn" = "y" ] || [ "$yn" = "Y" ]; then
+                    tar xzf "$meta_dir/etc-backup.tar.gz" -C /
+                    green "/etc restored."
+                fi
+            fi
+            ;;
+        4)
+            echo ""
+            [ -f "$meta_dir/info.txt" ] && { bold "System info:"; cat "$meta_dir/info.txt"; echo ""; }
+            [ -f "$meta_dir/flatpak-apps.txt" ] && { bold "Flatpak apps:"; cat "$meta_dir/flatpak-apps.txt"; echo ""; }
+            [ -f "$meta_dir/layered-packages.txt" ] && { bold "Layered packages:"; cat "$meta_dir/layered-packages.txt"; echo ""; }
+            [ -f "$meta_dir/rpm-ostree-status.txt" ] && { bold "rpm-ostree status:"; cat "$meta_dir/rpm-ostree-status.txt"; echo ""; }
+            ;;
+        b|B) return ;;
+    esac
+}
+
+# ═══════════════════════════════════════════
+#  Main Menu
+# ═══════════════════════════════════════════
+while true; do
+    list_snapshots
+
+    bold "Actions:"
+    echo "  1) Browse snapshot (mount read-only, copy files manually)"
+    echo "  2) Restore specific files/directories"
+    echo "  3) Full home restore (replace entire /var/home)"
+    echo "  4) Restore system metadata (flatpaks, packages, /etc)"
+    echo "  q) Quit"
+    echo ""
+    echo -n "Choice: "
+    read -r action
+
+    case "$action" in
+        q|Q)
+            echo "Closing backup drive..."
+            umount "$BACKUP_MOUNT" 2>/dev/null || true
+            cryptsetup luksClose "$LUKS_NAME" 2>/dev/null || true
+            green "Done."
+            exit 0
+            ;;
+        1|2|3|4)
+            echo -n "Snapshot number: "
+            read -r num
+            if [[ ! "$num" =~ ^[0-9]+$ ]] || [ "$num" -lt 1 ] || [ "$num" -gt "${#SNAPSHOTS[@]}" ]; then
+                red "Invalid selection."
+                continue
+            fi
+            SELECTED="${SNAPSHOTS[$((num-1))]}"
+            SELECTED_NAME=$(basename "$SELECTED")
+
+            show_metadata "$SELECTED_NAME"
+
+            case "$action" in
+                1) browse_snapshot "$SELECTED" ;;
+                2) restore_files "$SELECTED" ;;
+                3) full_restore "$SELECTED" ;;
+                4) restore_metadata "$SELECTED_NAME" ;;
+            esac
+            ;;
+        *)
+            red "Invalid choice."
+            ;;
+    esac
+done

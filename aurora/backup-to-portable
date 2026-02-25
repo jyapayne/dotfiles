@@ -1,0 +1,199 @@
+#!/bin/bash
+# =============================================================================
+# Backup to Portable Drive
+# BTRFS snapshot + send/receive with LUKS encryption
+# For Aurora (Universal Blue) on BTRFS
+# =============================================================================
+set -euo pipefail
+
+# --- Configuration ---
+LUKS_DEVICE="/dev/disk/by-id/usb-Seagate_Portable_NT3D9HDX-0:0-part1"
+LUKS_KEYFILE="/etc/backup-drive.key"
+LUKS_NAME="backup-drive"
+BACKUP_MOUNT="/mnt/backup-drive"
+BTRFS_DEVICE="/dev/nvme0n1p3"
+BTRFS_TOP="/mnt/btrfs-root"
+SNAP_DIR="snapshots"
+KEEP_LOCAL=2       # local snapshots (need at least 1 for incremental parent)
+KEEP_REMOTE=10     # remote snapshots on backup drive
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+LOGFILE="/var/log/backup-portable.log"
+LOCK="/run/backup-portable.lock"
+
+# --- Helpers ---
+log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOGFILE"; }
+
+notify() {
+    local urgency="${3:-normal}"
+    local uid bus
+    uid=$(id -u joey 2>/dev/null) || return 0
+    bus="unix:path=/run/user/${uid}/bus"
+    sudo -u joey DBUS_SESSION_BUS_ADDRESS="$bus" \
+        notify-send -u "$urgency" -i drive-removable-media "$1" "$2" 2>/dev/null || true
+}
+
+die() { log "ERROR: $*"; notify "Backup Failed" "$*" critical; exit 1; }
+
+cleanup() {
+    log "Cleaning up mounts..."
+    mountpoint -q "$BACKUP_MOUNT" 2>/dev/null && umount "$BACKUP_MOUNT" || true
+    mountpoint -q "$BTRFS_TOP" 2>/dev/null && umount "$BTRFS_TOP" || true
+    [ -e "/dev/mapper/$LUKS_NAME" ] && cryptsetup luksClose "$LUKS_NAME" 2>/dev/null || true
+    rm -f "$LOCK"
+}
+trap cleanup EXIT
+
+# --- Preflight ---
+[ "$(id -u)" -eq 0 ] || die "Must run as root"
+
+# Single-instance lock
+if [ -f "$LOCK" ]; then
+    pid=$(cat "$LOCK" 2>/dev/null || true)
+    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+        die "Backup already running (PID $pid)"
+    fi
+    log "Removing stale lock"
+    rm -f "$LOCK"
+fi
+echo $$ > "$LOCK"
+
+# Check drive is present
+[ -e "$LUKS_DEVICE" ] || die "Backup drive not connected"
+
+log "========================================="
+log "Starting backup: $TIMESTAMP"
+log "========================================="
+notify "Backup Started — Do NOT unplug drive" "Backing up home to Portable drive..." critical
+
+# --- Open LUKS ---
+if [ ! -e "/dev/mapper/$LUKS_NAME" ]; then
+    log "Opening LUKS volume..."
+    cryptsetup luksOpen --key-file "$LUKS_KEYFILE" "$LUKS_DEVICE" "$LUKS_NAME" \
+        || die "Failed to open LUKS volume"
+fi
+
+# --- Mount filesystems ---
+mkdir -p "$BACKUP_MOUNT" "$BTRFS_TOP"
+
+if ! mountpoint -q "$BACKUP_MOUNT"; then
+    mount /dev/mapper/"$LUKS_NAME" "$BACKUP_MOUNT" \
+        || die "Failed to mount backup drive"
+fi
+
+if ! mountpoint -q "$BTRFS_TOP"; then
+    mount -o subvolid=5 "$BTRFS_DEVICE" "$BTRFS_TOP" \
+        || die "Failed to mount source BTRFS top-level"
+fi
+
+mkdir -p "$BTRFS_TOP/$SNAP_DIR"
+
+# --- Create read-only snapshot of home ---
+SNAP_NAME="home-$TIMESTAMP"
+log "Creating snapshot: $SNAP_NAME"
+btrfs subvolume snapshot -r "$BTRFS_TOP/home" "$BTRFS_TOP/$SNAP_DIR/$SNAP_NAME" \
+    || die "Failed to create snapshot"
+
+# --- Send snapshot to backup drive ---
+# Find parent for incremental send: latest snapshot that exists on BOTH local and remote
+PARENT_FLAG=""
+LATEST_REMOTE=$(ls -1d "$BACKUP_MOUNT/backups"/home-* 2>/dev/null | sort | tail -1 || true)
+if [ -n "$LATEST_REMOTE" ]; then
+    PARENT_NAME=$(basename "$LATEST_REMOTE")
+    if [ -d "$BTRFS_TOP/$SNAP_DIR/$PARENT_NAME" ]; then
+        PARENT_FLAG="-p $BTRFS_TOP/$SNAP_DIR/$PARENT_NAME"
+        log "Incremental send (parent: $PARENT_NAME)"
+    else
+        log "Parent snapshot not found locally, falling back to full send"
+    fi
+else
+    log "No remote snapshots found, performing full send"
+fi
+
+log "Sending snapshot to backup drive..."
+# shellcheck disable=SC2086
+btrfs send $PARENT_FLAG "$BTRFS_TOP/$SNAP_DIR/$SNAP_NAME" \
+    | btrfs receive "$BACKUP_MOUNT/backups/" \
+    || die "btrfs send/receive failed"
+
+log "Snapshot sent successfully"
+
+# --- Save metadata ---
+log "Saving metadata..."
+META_DIR="$BACKUP_MOUNT/metadata/$TIMESTAMP"
+mkdir -p "$META_DIR"
+
+# Flatpak apps
+flatpak list --app --columns=application > "$META_DIR/flatpak-apps.txt" 2>/dev/null || true
+
+# rpm-ostree status
+rpm-ostree status > "$META_DIR/rpm-ostree-status.txt" 2>/dev/null || true
+
+# Layered packages
+rpm-ostree status --json 2>/dev/null | python3 -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    pkgs = d.get('deployments', [{}])[0].get('requested-packages', [])
+    print('\n'.join(pkgs))
+except: pass
+" > "$META_DIR/layered-packages.txt" 2>/dev/null || true
+
+# /etc (small but important on ostree systems)
+tar czf "$META_DIR/etc-backup.tar.gz" -C / etc/ 2>/dev/null || true
+
+# Hostname + date for identification
+echo "$(hostname) - $(date)" > "$META_DIR/info.txt"
+
+# --- Cleanup old local snapshots ---
+# Keep KEEP_LOCAL most recent, but ALWAYS keep the one matching latest remote
+log "Cleaning up old local snapshots..."
+mapfile -t LOCAL_SNAPS < <(ls -1d "$BTRFS_TOP/$SNAP_DIR"/home-* 2>/dev/null | sort)
+LOCAL_COUNT=${#LOCAL_SNAPS[@]}
+
+if [ "$LOCAL_COUNT" -gt "$KEEP_LOCAL" ]; then
+    # The latest local snap is the one we just created, keep it
+    # Also keep the most recent remote's parent if different
+    for ((i=0; i < LOCAL_COUNT - KEEP_LOCAL; i++)); do
+        OLD_SNAP="${LOCAL_SNAPS[$i]}"
+        OLD_NAME=$(basename "$OLD_SNAP")
+        # Don't delete if it's still needed as a remote parent reference
+        if [ -d "$BACKUP_MOUNT/backups/$OLD_NAME" ]; then
+            log "Keeping local snapshot $OLD_NAME (exists on remote)"
+            continue
+        fi
+        log "Deleting old local snapshot: $OLD_NAME"
+        btrfs subvolume delete "$OLD_SNAP" 2>/dev/null || true
+    done
+fi
+
+# --- Cleanup old remote snapshots ---
+log "Cleaning up old remote snapshots..."
+mapfile -t REMOTE_SNAPS < <(ls -1d "$BACKUP_MOUNT/backups"/home-* 2>/dev/null | sort)
+REMOTE_COUNT=${#REMOTE_SNAPS[@]}
+
+if [ "$REMOTE_COUNT" -gt "$KEEP_REMOTE" ]; then
+    for ((i=0; i < REMOTE_COUNT - KEEP_REMOTE; i++)); do
+        OLD_REMOTE="${REMOTE_SNAPS[$i]}"
+        log "Deleting old remote snapshot: $(basename "$OLD_REMOTE")"
+        btrfs subvolume delete "$OLD_REMOTE" 2>/dev/null || true
+    done
+fi
+
+# Cleanup old metadata dirs
+mapfile -t META_DIRS < <(ls -1d "$BACKUP_MOUNT/metadata"/20* 2>/dev/null | sort)
+META_COUNT=${#META_DIRS[@]}
+if [ "$META_COUNT" -gt "$KEEP_REMOTE" ]; then
+    for ((i=0; i < META_COUNT - KEEP_REMOTE; i++)); do
+        rm -rf "${META_DIRS[$i]}"
+    done
+fi
+
+# --- Final sync ---
+log "Syncing drive..."
+sync
+USAGE=$(df -h /dev/mapper/"$LUKS_NAME" | tail -1 | awk '{print $3 " used / " $2 " total (" $5 ")"}')
+DURATION=$(( $(date +%s) - $(date -d "${TIMESTAMP:0:8} ${TIMESTAMP:9:2}:${TIMESTAMP:11:2}:${TIMESTAMP:13:2}" +%s) ))
+DURATION_MIN=$(( DURATION / 60 ))
+log "Backup complete: $SNAP_NAME (${DURATION_MIN}m)"
+log "Drive usage: $USAGE"
+notify "Backup Complete — Safe to unplug" "Snapshot: $SNAP_NAME\nDrive: $USAGE\nDuration: ${DURATION_MIN} min" critical

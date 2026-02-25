@@ -1,0 +1,18 @@
+[Unit]
+Description=Backup home to Portable drive (BTRFS send/receive)
+# Give the drive a moment to fully settle after plug-in
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/local/bin/backup-to-portable
+TimeoutStartSec=7200
+Nice=10
+IOSchedulingClass=idle
+IOSchedulingPriority=7
+# Don't kill backup if user logs out
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,2 @@
+# Trigger backup when Seagate Portable drive is connected
+ACTION=="add", SUBSYSTEM=="block", ENV{ID_SERIAL_SHORT}=="NT3D9HDX", ENV{DEVTYPE}=="partition", TAG+="systemd", ENV{SYSTEMD_WANTS}="backup-portable.service"

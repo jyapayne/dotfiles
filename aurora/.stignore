@@ -1,0 +1,65 @@
+// =============================================
+// Syncthing excludes for home directory sync
+// Everything NOT listed here will be synced
+// =============================================
+
+// --- Caches (all regeneratable) ---
+.cache
+.bun
+.npm
+.nvm
+go
+.local/share/Trash
+
+// --- Package managers / build artifacts ---
+**/node_modules
+**/__pycache__
+**/.venv
+**/target
+**/.tox
+**/.mypy_cache
+**/.pytest_cache
+**/dist
+**/build
+**/.next
+**/.turbo
+
+// --- AI tool session logs (large, not portable) ---
+.local/share/opencode
+.local/share/claude
+.opencode
+.claude
+
+// --- Containers (rebuild per-machine) ---
+.local/share/containers
+
+// --- Flatpak app data (reinstall regenerates) ---
+.var/app/com.valvesoftware.Steam
+.var/app/com.microsoft.Edge
+.var/app/com.google.Chrome
+.var/app/com.stremio.Stremio
+.var/app/org.mozilla.firefox
+
+// --- Machine-specific / KDE desktop state ---
+.local/share/baloo
+.local/share/kactivitymanagerd
+.local/share/klipper
+.local/share/recently-used.xbel
+auto-cpufreq
+
+// --- SQLite DBs (live sync corrupts) ---
+.open-webui
+
+// --- Transient ---
+Downloads
+
+// --- Syncthing own data ---
+.config/syncthing
+.local/state/syncthing
+
+// --- Common junk patterns ---
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
