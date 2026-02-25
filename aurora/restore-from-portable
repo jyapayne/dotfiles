@@ -10,7 +10,8 @@ LUKS_DEVICE="/dev/disk/by-id/usb-Seagate_Portable_NT3D9HDX-0:0-part1"
 LUKS_KEYFILE="/etc/backup-drive.key"
 LUKS_NAME="backup-drive"
 BACKUP_MOUNT="/mnt/backup-drive"
-BTRFS_DEVICE="/dev/nvme0n1p3"
+BTRFS_DEVICE="$(findmnt -n -o SOURCE /var/home 2>/dev/null | sed 's/\[.*//')"
+[ -b "${BTRFS_DEVICE:-}" ] || BTRFS_DEVICE="$(findmnt -n -o SOURCE / 2>/dev/null | sed 's/\[.*//')"
 BTRFS_TOP="/mnt/btrfs-root"
 BROWSE_MOUNT="/mnt/backup-browse"
 
@@ -226,7 +227,7 @@ full_restore() {
     green "═══════════════════════════════════════════"
     echo ""
     yellow "After reboot, once verified, clean up old home with:"
-    echo "  sudo mount -o subvolid=5 /dev/nvme0n1p3 /mnt/btrfs-root"
+    echo "  sudo mount -o subvolid=5 $BTRFS_DEVICE /mnt/btrfs-root"
     echo "  sudo btrfs subvolume delete /mnt/btrfs-root/home-old-*"
     echo ""
 
