@@ -260,7 +260,7 @@ restore_metadata() {
                 while IFS= read -r app; do
                     [ -z "$app" ] && continue
                     echo "  Installing: $app"
-                    flatpak install -y flathub "$app" 2>/dev/null || yellow "  Failed: $app"
+                    flatpak install -y --noninteractive flathub "$app" 2>&1 | grep -v $'\e' || yellow "  Failed: $app"
                 done < "$meta_dir/flatpak-apps.txt"
                 green "Done."
             fi
