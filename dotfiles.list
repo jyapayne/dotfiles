@@ -102,6 +102,7 @@ bashscripts
 .config/thorium-flags.conf
 
 # Restored by `dot deploy` only when you agree (it asks before using sudo).
+.local/bin/indra-text
 [system]
 @snapshot
 /etc/sddm.conf

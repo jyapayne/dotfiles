@@ -33,4 +33,7 @@ dim = "never"
 suspend = "45m"
 
 [screenshots]
-text_command = "/home/joey/.local/bin/indra-ocr {file} --format text --cores 4"
+text_command = "/home/joey/.local/bin/indra-text {file} --cores 4"
+
+[login]
+take_over = true

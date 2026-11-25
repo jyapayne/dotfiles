@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+"""Text from a picture through indra-ocr, without its stray fragments.
+
+indra-ocr also reads icons ("©" as "C", "•") and letters cut off at the picture's edge ("Re"),
+and prints unsure regions as empty lines. This keeps the lines that are real text:
+  - drops empty lines and lines with no letter or digit;
+  - drops fragments of 3 characters or fewer near the picture's edge (cut by the selection);
+  - drops lone 1–2 letter fragments (icons) when the picture also has real lines of text.
+Numbers are always kept. With no real line at all, everything with a letter or digit is kept.
+Usage: indra-text FILE [indra-ocr options...]   (e.g. indra-text {file} --cores 4)
+"""
+import json
+import os
+import subprocess
+import sys
+
+EDGE = 12  # pixels: a short fragment this close to the picture's edge was cut by the selection
+SHORT = 3  # characters: at an edge, a fragment this short is a cut-off piece
+ICON = 2  # characters: a lone fragment this short beside real text is an icon read as letters
+
+
+def main() -> int:
+    if len(sys.argv) < 2:
+        print(__doc__.strip(), file=sys.stderr)
+        return 2
+    path, rest = sys.argv[1], sys.argv[2:]
+    ocr = os.path.join(os.path.dirname(os.path.realpath(__file__)), "indra-ocr")
+    if not os.access(ocr, os.X_OK):
+        ocr = "indra-ocr"
+    done = subprocess.run([ocr, path, "--format", "json", *rest], capture_output=True, text=True)
+    if done.returncode != 0:
+        sys.stderr.write(done.stderr)
+        return done.returncode
+    pages = [json.loads(line) for line in done.stdout.splitlines() if line.startswith("{")]
+    size = picture_size(path)
+    kept = []
+    lines = [(line.get("text", "").strip(), line.get("box")) for page in pages for line in page.get("lines", [])]
+    lines = [(text, box) for text, box in lines if any(ch.isalnum() for ch in text)]
+    has_text = any(len(text) > SHORT for text, _ in lines)
+    for text, box in lines:
+        if has_text and not text.replace(".", "").replace(",", "").isdigit():
+            if len(text) <= SHORT and size and at_edge(box, size):
+                continue
+            if len(text) <= ICON:
+                continue
+        kept.append(text)
+    print("\n".join(kept))
+    return 0
+
+
+def picture_size(path):
+    try:
+        from PIL import Image  # noqa: PLC0415
+    except ImportError:
+        return None
+    with Image.open(path) as picture:
+        return picture.size
+
+
+def at_edge(box, size):
+    if not box or len(box) != 4:
+        return False
+    left, top, right, bottom = box
+    width, height = size
+    return left <= EDGE or top <= EDGE or right >= width - EDGE or bottom >= height - EDGE
+
+
+if __name__ == "__main__":
+    sys.exit(main())
