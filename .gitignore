@@ -1,28 +1,5 @@
-.pythonhistory
-.python_history
-.vim/session
-.vim_session
-.viminfo
-.pylint.d
-.tmux/plugins
-.vim/plugged
-.tmux/resurrect
-.bash_history
-.vim/undo
-# Swap
-[._]*.s[a-v][a-z]
-[._]*.sw[a-p]
-[._]s[a-rt-v][a-z]
-[._]ss[a-gi-z]
-[._]sw[a-p]
-
-# Session
-Session.vim
-
-# Temporary
-.netrwhist
+# Editor leftovers. `dot backup` skips these already; this covers hand edits in the repo.
+*.swp
+*.swo
 *~
-# Auto-generated tag files
-tags
-# Persistent undo
-[._]*.un~
+.netrwhist

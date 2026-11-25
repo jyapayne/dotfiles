@@ -1,0 +1,108 @@
+# What `dot` backs up and deploys. One entry per line, under a [group] heading.
+#
+#   path                 a file or folder under ~ (or an absolute /etc path); no spaces
+#   path  !pattern ...   leave out matching files (rsync patterns: `name` matches anywhere,
+#                        `/name` only at the top of the entry, `dir/` only folders)
+#   path  nolinks        leave out symlinks inside the entry
+#   @snapshot            the [system] package and service lists (generated on backup)
+#
+# Entries may sit inside other entries (BlueRune's files inside ~/.config/hypr): the inner
+# entry owns them, so they follow its group. Patterns under [global] apply to every entry.
+# Files ~/.ssh-like or named like credentials are never copied, whatever this list says.
+
+[global]
+!*.swp !*.swo !*~ !.DS_Store !__pycache__/ !*.pyc
+!*-backup-* !*.pre-bluerune !*.old !*.new !*.bak !*.bak.* !*.orig
+
+[shell]
+.bashrc
+.bash_aliases
+.bash_logout
+.bash_profile
+.profile
+.zshrc
+.zshenv
+.zprofile
+.config/zshrc.d
+.config/fish  !fish_variables
+.config/starship.toml
+.inputrc
+.pythonrc
+.pythonstartup
+.gdbinit
+bashscripts
+
+[editor]
+.vimrc
+.vim  !/undo/ !/plugged/ !/session/ !.netrwhist
+.config/nvim
+.config/helix
+.config/zed/settings.json
+.pylintrc
+
+[terminal]
+.tmux.conf
+.tmux.conf.local
+.config/alacritty
+.config/foot
+.config/kitty
+.config/btop
+.config/htop
+.config/fastfetch
+.config/cava
+.config/glow
+
+[desktop]
+.config/hypr
+.config/illogical-impulse/config.json
+.config/fuzzel
+.config/fcitx5
+.config/autostart
+.config/mimeapps.list
+.config/user-dirs.dirs
+.config/user-dirs.locale
+.config/xdg-desktop-portal
+.config/nwg-displays
+.config/cliphist
+.config/swappy
+.config/systemd  nolinks !*.wants/
+.local/bin/ApplyMonitors.sh
+.local/bin/merge-monitors.sh
+
+# BlueRune and the files it generates or manages (current state, so they're kept).
+[bluerune]
+.config/bluerune
+.config/hypr/bluerune.lua
+.config/hypr/bluerune-binds.lua
+.config/hypr/hypridle.conf
+.config/hypr/custom/bluerune.lua
+.config/gtk-3.0/bluerune.css
+.config/gtk-4.0/bluerune.css
+
+[theming]
+.config/gtk-3.0  !bookmarks
+.config/gtk-4.0
+.config/gtkrc
+.config/gtkrc-2.0
+.config/kdeglobals
+.config/Kvantum
+.config/qt5ct
+.config/qt6ct
+.config/fontconfig
+.config/matugen
+.config/wallust
+
+[apps]
+.config/mpv
+.config/Thunar
+.config/qalculate
+.config/chrome-flags.conf
+.config/code-flags.conf
+.config/thorium-flags.conf
+
+# Restored by `dot deploy` only when you agree (it asks before using sudo).
+[system]
+@snapshot
+/etc/sddm.conf
+/etc/sddm.conf.d
+/etc/plymouth/plymouthd.conf

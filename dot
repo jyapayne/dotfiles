@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+# dot — back up this machine's dotfiles into this repo, and deploy them onto a machine.
+# What is covered lives in dotfiles.list. Run `./dot help` for the commands.
+set -uo pipefail
+
+DOT_REPO=$(cd -- "$(dirname -- "$(realpath -- "${BASH_SOURCE[0]}")")" && pwd)
+for lib in common manifest scan system backup deploy; do
+    # shellcheck source=/dev/null
+    source "$DOT_REPO/lib/$lib.sh"
+done
+
+usage() {
+    cat <<EOF
+${C_BOLD}dot${C_RESET} — keep this machine's dotfiles in $DOT_REPO
+
+${C_BOLD}Commands${C_RESET}
+  dot backup          copy what dotfiles.list names from ~ into the repo, scan it for
+                      secrets, show what changed and offer to commit
+  dot status          what differs between ~ and the repo (writes nothing)
+  dot diff [PATH...]  line-by-line differences, repo → this machine
+  dot deploy          put the repo's files into ~ (a preview unless you confirm);
+                      then optionally packages, services, /etc files and BlueRune
+  dot revert [STAMP]  undo a deploy from its backup (latest if STAMP is left out)
+  dot add PATH        add a file or folder to dotfiles.list (after a secret check)
+  dot list            show what dotfiles.list covers, by group
+  dot help            this help
+
+${C_BOLD}Options${C_RESET}
+  -y, --yes           answer yes to confirmations (deploy: write files; backup: commit)
+  -n, --dry-run       show what would happen, change nothing
+  -v, --verbose       also list unchanged files and /etc diffs
+  backup:  --no-commit, --push
+  deploy:  --groups "shell editor" | --all, --link (symlink instead of copy),
+           --packages, --units, --etc, --bluerune (run those steps without asking),
+           --everything (all groups and every step)
+  revert:  --force (revert a deploy again)
+  add:     --group NAME, --exclude PATTERN (repeatable)
+
+${C_BOLD}Environment${C_RESET}
+  BLUERUNE_DIR       BlueRune checkout (default ~/Projects/bluerune)
+  BLUERUNE_PROFILE   profile for its installer (default \$BLUERUNE_DIR/dist/profiles/joey)
+  DOT_MAX_SIZE       skip files bigger than this when backing up (default 2m)
+  NO_COLOR           plain output
+
+On a new machine: git clone https://github.com/jyapayne/dotfiles && cd dotfiles && ./dot deploy
+EOF
+}
+
+cmd_list() {
+    local g i
+    load_manifest
+    while IFS= read -r g; do
+        subheading "[$g]"
+        for i in $(entries_in_groups "$g"); do
+            printf '    %s%s\n' "$(pretty "${E_PATH[$i]}")" \
+                "$(sed -n 's/./  excluding: &/p' <<<"$(grep -v '^$' <<<"${E_EXCL[$i]}" | paste -sd' ')")"
+        done
+        [[ $g == "$SNAPSHOT_GROUP" ]] && printf '    %s\n' "@snapshot: packages, enabled services, system facts"
+    done < <(list_groups)
+    [[ ${#G_EXCL[@]} -gt 0 ]] && note "Everywhere excluded: ${G_EXCL[*]}"
+    return 0
+}
+
+main() {
+    local cmd=${1:-help} arg
+    local -a rest=()
+    shift || true
+    ASSUME_YES=0 DRY_RUN=0 VERBOSE=0 NO_COMMIT=0 OPT_PUSH=0 OPT_ALL=0 OPT_GROUPS='' MODE=copy FORCE=0
+    OPT_PACKAGES=0 OPT_UNITS=0 OPT_ETC=0 OPT_BLUERUNE=0
+    DOT_TMPS=()
+    while (($#)); do
+        arg=$1
+        case $arg in
+            -y | --yes) ASSUME_YES=1 ;;
+            -n | --dry-run) DRY_RUN=1 ;;
+            -v | --verbose) VERBOSE=1 ;;
+            --no-commit) NO_COMMIT=1 ;;
+            --push) OPT_PUSH=1 ;;
+            --all) OPT_ALL=1 ;;
+            --groups | --group | -g)
+                [[ $cmd == add ]] && { rest+=("$arg" "${2:?}"); shift 2; continue; }
+                OPT_GROUPS=${2:?--groups needs a list}; OPT_GROUPS=${OPT_GROUPS//,/ }; shift ;;
+            --groups=*) OPT_GROUPS=${arg#*=}; OPT_GROUPS=${OPT_GROUPS//,/ } ;;
+            --link) MODE=link ;;
+            --copy) MODE=copy ;;
+            --packages) OPT_PACKAGES=1 ;;
+            --units) OPT_UNITS=1 ;;
+            --etc) OPT_ETC=1 ;;
+            --bluerune) OPT_BLUERUNE=1 ;;
+            --everything) OPT_ALL=1 OPT_PACKAGES=1 OPT_UNITS=1 OPT_ETC=1 OPT_BLUERUNE=1 ;;
+            --force) FORCE=1 ;;
+            -h | --help) cmd=help ;;
+            --) shift; rest+=("$@"); break ;;
+            *) rest+=("$arg") ;;
+        esac
+        shift
+    done
+    trap cleanup_tmps EXIT
+    trap 'echo; exit 130' INT
+    case $cmd in
+        backup) cmd_backup ;;
+        status | st) cmd_status ;;
+        diff) cmd_diff "${rest[@]}" ;;
+        deploy) cmd_deploy ;;
+        revert) cmd_revert "${rest[@]}" ;;
+        add) cmd_add "${rest[@]}" ;;
+        list | ls) cmd_list ;;
+        help | -h | --help) usage ;;
+        *) usage >&2; die "unknown command '$cmd'" ;;
+    esac
+}
+
+setup_colors
+main "$@"
