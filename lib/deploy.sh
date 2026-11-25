@@ -104,18 +104,24 @@ cmd_deploy() {
     n_changed=$(grep -c $'^changed\t' <<<"$plan")
     n_same=$(grep -c $'^same\t' <<<"$plan")
     n_blocked=$(grep -c $'^blocked\t' <<<"$plan")
+    local shown hidden
     while IFS= read -r g; do
         grep -qE $'^(new|changed|blocked)\t'"$g"$'\t' <<<"$plan" || { ((VERBOSE)) && subheading "  [$g] up to date"; continue; }
         subheading "  [$g]"
+        shown=0 hidden=0
         while IFS=$'\t' read -r state group path; do
             [[ $group == "$g" ]] || continue
             case $state in
-                new) change_line + "$(pretty "$path")" ;;
+                new)
+                    # Long lists of new files are cut short; replaced files are always shown.
+                    if ((VERBOSE || shown < 8)); then change_line + "$(pretty "$path")"; shown=$((shown + 1)); else hidden=$((hidden + 1)); fi
+                    ;;
                 changed) change_line '~' "$(pretty "$path")$([[ $MODE == link ]] && echo ' (becomes a link)')" ;;
                 blocked) change_line '!' "$(pretty "$path") (a directory is in the way; skipped)" ;;
                 same) ((VERBOSE)) && change_line '=' "$(pretty "$path")" ;;
             esac
         done <<<"$plan"
+        ((hidden)) && note "  … and $hidden more new files (--verbose lists them all)"
     done <<<"$(tr ' ' '\n' <<<"$groups")"
     say "$n_new new, $n_changed to replace, $n_same already up to date$( ((n_blocked)) && echo ", $n_blocked blocked")."
 

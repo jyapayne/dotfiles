@@ -31,18 +31,22 @@ write_snapshot() {
 
 # One-line summary of how the live package list differs from the saved one.
 snapshot_drift() {
-    local repo=$DOT_REPO/system stage=$1/system f added removed
+    local repo=$DOT_REPO/system stage=$1/system f added removed changed=0
     for f in packages/native.txt packages/foreign.txt units/system-enabled.txt units/user-enabled.txt; do
         [[ -f $stage/$f ]] || continue
         if [[ ! -f $repo/$f ]]; then
             change_line + "system/$f (new, $(plural "$(wc -l <"$stage/$f")" line))"
+            changed=1
             continue
         fi
-        added=$(comm -13 "$repo/$f" "$stage/$f" | wc -l)
-        removed=$(comm -23 "$repo/$f" "$stage/$f" | wc -l)
+        added=$(LC_ALL=C comm -13 "$repo/$f" "$stage/$f" | wc -l)
+        removed=$(LC_ALL=C comm -23 "$repo/$f" "$stage/$f" | wc -l)
         ((added + removed)) || continue
         change_line '~' "system/$f (+$added −$removed since the last backup)"
+        changed=1
     done
+    ((changed)) || note "  The package and service lists match."
+    return 0
 }
 
 # Packages from a saved list that aren't installed yet (one per line).
@@ -63,12 +67,19 @@ step_packages() {
     mapfile -t aur < <(missing_packages "$foreign")
     if ((${#want[@]} + ${#aur[@]} == 0)); then ok "Every saved package is already installed."; return 0; fi
     if ((${#want[@]})); then
-        mapfile -t avail < <(LC_ALL=C comm -12 <(printf '%s\n' "${want[@]}") <(pacman -Slq 2>/dev/null | LC_ALL=C sort -u))
-        mapfile -t gone < <(LC_ALL=C comm -23 <(printf '%s\n' "${want[@]}") <(printf '%s\n' "${avail[@]}"))
-        say "$(plural "${#avail[@]}" package) to install from the repos: ${avail[*]:0:12}$( ((${#avail[@]} > 12)) && echo ' …')"
-        ((${#gone[@]})) && warn "Not in any repo, skipped: ${gone[*]}"
+        local repo_list
+        repo_list=$(pacman -Slq 2>/dev/null | LC_ALL=C sort -u)
+        if [[ -z $repo_list ]]; then
+            warn "pacman's package database looks empty (run sudo pacman -Sy); trying every package."
+            avail=("${want[@]}")
+        else
+            mapfile -t avail < <(LC_ALL=C comm -12 <(printf '%s\n' "${want[@]}") - <<<"$repo_list")
+            mapfile -t gone < <(LC_ALL=C comm -23 <(printf '%s\n' "${want[@]}") <(printf '%s\n' "${avail[@]}"))
+        fi
+        ((${#avail[@]})) && say "$(plural "${#avail[@]}" package) to install from the repos: $(preview_list "${avail[@]}")"
+        ((${#gone[@]})) && warn "$(plural "${#gone[@]}" package) in no repo, skipped: $(preview_list "${gone[@]}")"
     fi
-    ((${#aur[@]})) && say "$(plural "${#aur[@]}" package) from the AUR: ${aur[*]:0:12}$( ((${#aur[@]} > 12)) && echo ' …')"
+    ((${#aur[@]})) && say "$(plural "${#aur[@]}" package) from the AUR: $(preview_list "${aur[@]}")"
     if ((DRY_RUN)); then note "Dry run: nothing installed."; return 0; fi
     if ((${#avail[@]})) && { ((OPT_PACKAGES)) || ask "Install them with sudo pacman?" n; }; then
         sudo pacman -S --needed "${avail[@]}" && ok "Installed repo packages." || warn "pacman failed; see above."
@@ -82,6 +93,14 @@ step_packages() {
             "$helper" -S --needed "${aur[@]}" && ok "Installed AUR packages." || warn "$helper failed; see above."
         fi
     fi
+}
+
+# The first ten names, then how many more.
+preview_list() {
+    local -a names=("$@")
+    printf '%s' "${names[*]:0:10}"
+    (($# > 10)) && printf ' … and %d more' $(($# - 10))
+    return 0
 }
 
 step_units() {
