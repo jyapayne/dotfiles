@@ -1,0 +1,4 @@
+/* BlueRune's accent, from its Appearance page. Written whole whenever the accent changes; edit gtk.css instead. */
+@define-color accent_color #4392f7;
+@define-color accent_bg_color #4392f7;
+@define-color accent_fg_color #0f0f11;

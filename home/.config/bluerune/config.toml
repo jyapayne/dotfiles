@@ -1,0 +1,31 @@
+# Started cautiously: change either in Settings when you're ready.
+
+[appearance]
+mode = "dark"
+
+[bar.tray]
+pinned = ["Fcitx"]
+
+[notifications]
+senders = ["notify-send", "omp", "bluerune-settings.desktop"]
+timeout = 7
+
+[display.night_light]
+temperature = 5000
+
+[wallpaper]
+picture = "/home/joey/Pictures/wallpapers/blue-forest.jpg"
+
+[wallpaper.clock]
+enabled = true
+
+[dock]
+pinned = ["firefox-developer-edition", "parsecd"]
+reveal_at_edge = false
+
+[lock]
+idle = "30m"
+
+[power.idle.ac]
+dim = "never"
+suspend = "45m"
