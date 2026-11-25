@@ -1,0 +1,14 @@
+cliphist-image.service
+cliphist-text.service
+gnome-keyring-daemon.socket
+hypridle.service
+monitor-sync.path
+p11-kit-server.socket
+pipewire-pulse.socket
+pipewire.service
+pipewire.socket
+speech-dispatcher.socket
+spiderweb-agent.service
+wireplumber.service
+xdg-user-dirs.service
+ydotool.service

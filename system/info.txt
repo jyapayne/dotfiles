@@ -1,0 +1,10 @@
+# Facts about the machine this backup came from. Informational: deploy doesn't apply it.
+os: Arch Linux
+kernel: 7.3.5-arch1-1
+hyprland: 0.57.2
+login shell: /bin/zsh
+locale: en_US.UTF-8
+keymap: us
+mkinitcpio (set these by hand if the hardware matches):
+  MODULES=(btrfs amdgpu)
+  HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block filesystems fsck plymouth)
