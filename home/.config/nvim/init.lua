@@ -3,8 +3,12 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.opt.termguicolors = true
 
+-- GUI/tmux sessions may not inherit user toolchain paths.
+vim.env.PATH = vim.env.HOME .. "/.cargo/bin:" .. vim.env.HOME .. "/Nim/bin:" .. (vim.env.PATH or "")
+
 -- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local godot_profile = rawget(_G, "godot_nvim_profile")
+local lazypath = (godot_profile and godot_profile.plugin_root or vim.fn.stdpath("data") .. "/lazy") .. "/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
   local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
@@ -21,7 +25,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Plugins
-require("lazy").setup({
+local plugins = {
   { "rust-lang/rust.vim" },
   { "jyapayne/nim.vim" },
   { "tpope/vim-fugitive" },
@@ -104,6 +108,9 @@ require("lazy").setup({
       -- coc-settings.json path note:
       -- If you reference vim-rescript server.js directly, update plugged path to lazy path:
       -- ~/.local/share/nvim/lazy/vim-rescript/server/out/server.js
+
+      -- CoC installs missing extensions without replacing existing ones.
+      vim.g.coc_global_extensions = { "coc-rust-analyzer" }
 
       _G.check_back_space = function()
         local col = vim.fn.col(".") - 1
@@ -238,7 +245,29 @@ require("lazy").setup({
         vim.fn.CocAction("runCommand", "editor.action.organizeImport")
       end, { nargs = 0 })
 
-      vim.o.statusline = "%{coc#status()}%{get(b:,'coc_current_function','')}" .. vim.o.statusline
+      vim.api.nvim_create_autocmd("FileType", {
+        group = coc_group,
+        pattern = "rust",
+        callback = function(args)
+          -- Clippy runs on save; K and gd/gr use the existing CoC mappings.
+          -- Stable Rustfmt formats whole files via :Format or <leader>f.
+          vim.keymap.set("n", "<leader>f", "<Cmd>Format<CR>",
+            { buffer = args.buf, silent = true, desc = "Rust: format file" })
+          -- Rust run/test pickers and macro expansion use the existing CoC UI.
+          vim.keymap.set("n", "<leader>rr", "<Cmd>CocCommand rust-analyzer.run<CR>",
+            { buffer = args.buf, silent = true, desc = "Rust: run target" })
+          vim.keymap.set("n", "<leader>rt", "<Cmd>CocCommand rust-analyzer.testCurrent<CR>",
+            { buffer = args.buf, silent = true, desc = "Rust: test current" })
+          vim.keymap.set("n", "<leader>rm", "<Cmd>CocCommand rust-analyzer.expandMacro<CR>",
+            { buffer = args.buf, silent = true, desc = "Rust: expand macro" })
+        end,
+      })
+
+      -- Airline's %! expression must stay at the start; its CoC extension
+      -- already supplies status/current-function segments.
+      if not vim.o.statusline:match("^%%!") then
+        vim.o.statusline = "%{coc#status()}%{get(b:,'coc_current_function','')}" .. vim.o.statusline
+      end
     end,
   },
   { "kassio/neoterm" },
@@ -385,7 +414,12 @@ require("lazy").setup({
   { "fatih/vim-go" },
   { "folke/trouble.nvim" },
   -- { "baabelfish/nvim-nim" },
-})
+}
+if godot_profile then
+  godot_profile.setup(plugins)
+else
+  require("lazy").setup(plugins)
+end
 
 -- Options and globals
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
@@ -614,10 +648,10 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true })
 
 vim.keymap.set("n", "<F1>", ":CocCommand java.debug.vimspector.start<CR>", { remap = true })
 
-vim.keymap.set("n", "<leader>y", '"+y', { remap = true })
-vim.keymap.set("v", "<leader>y", '"+y', { remap = true })
-vim.keymap.set("n", "<leader>p", '"+p', { remap = true })
-vim.keymap.set("v", "<leader>p", '"+p', { remap = true })
+vim.keymap.set("n", "<leader>y", '"+y', { noremap = true })
+vim.keymap.set("v", "<leader>y", '"+y', { noremap = true })
+vim.keymap.set("n", "<leader>p", '"+p', { noremap = true })
+vim.keymap.set("v", "<leader>p", '"+p', { noremap = true })
 
 -- Autocommands
 local binary_group = vim.api.nvim_create_augroup("Binary", { clear = true })

@@ -1,7 +1,17 @@
 {
     "suggest.noselect": true,
     "semanticTokens.enable": true,
-    "semanticTokens.filetypes": ["c", "cpp"],
+    "semanticTokens.filetypes": ["c", "cpp", "rust"],
+    "[rust]": {
+        "semanticTokens.enable": true,
+        "inlayHint.enable": true
+    },
+    "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer",
+    "rust-analyzer.check.command": "clippy",
+    "[zig]": {
+        "coc.preferences.formatOnSave": true,
+        "semanticTokens.enable": true
+    },
     "languageserver": {
       "rescript": {
         "enable": true,
@@ -11,12 +21,12 @@
         "rootPatterns": ["bsconfig.json"]
       },
       "nim": {
-         "command": "nimlangserver",
+         "command": "/home/joey/.nimble/bin/nimlangserver",
          "filetypes": ["nim"],
          "trace.server": "verbose",
            "settings": {
              "nim": {
-               "nimsuggestPath": "~/.nimble/bin/nimsuggest"
+               "nimsuggestPath": "/home/joey/Nim/bin/nimsuggest"
            }
          }
       },
@@ -30,7 +40,14 @@
           "args": ["--lsp"],
           "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"],
           "filetypes": ["haskell", "lhaskell"]
+      },
+      "zls": {
+        "command": "/usr/local/bin/zls",
+        "filetypes": [ "zig", "zon" ],
+        "settings": {
+          "zls.zig_exe_path": "/usr/local/bin/zig"
         }
+      }
     },
     "clangd.path": "~/.config/coc/extensions/coc-clangd-data/install/12.0.1/clangd_12.0.1/bin/clangd",
     "python.venvPath": ".venv"
