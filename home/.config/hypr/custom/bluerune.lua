@@ -13,6 +13,7 @@ for _, key in ipairs({
     "XF86MonBrightnessUp", "XF86MonBrightnessDown",
     "CTRL + SUPER + R", -- ii's "restart widgets" would start Quickshell again
     "ALT + Tab", -- custom/keybinds.lua's window cycle; BlueRune's switcher takes Alt+Tab
+    "SUPER + V", "SUPER + Period", -- ii's fuzzel clipboard and emoji pickers; BlueRune's launcher has both
 }) do
     hl.unbind(key)
 end

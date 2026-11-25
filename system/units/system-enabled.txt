@@ -48,5 +48,4 @@ virtsecretd.socket
 virtstoraged-admin.socket
 virtstoraged-ro.socket
 virtstoraged.socket
-vmware-usbarbitrator.service
 wpa_supplicant.service

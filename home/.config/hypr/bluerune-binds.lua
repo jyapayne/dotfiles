@@ -18,8 +18,6 @@ hl.on("hyprland.start", function()
     -- `systemctl --user enable bluerune.service` and a session that starts
     -- graphical-session.target, the second half does nothing and is harmless.
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP && systemctl --user start bluerune.service")
-    -- The password prompt for apps and for BlueRune's own settings that need one.
-    hl.exec_cmd("systemctl --user start hyprpolkitagent.service")
 end)
 
 -- Stop the shell with Hyprland, so it isn't left trying to reach a compositor that is gone.
@@ -30,6 +28,8 @@ end)
 -- Shell ------------------------------------------------------------------------------------
 
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("bluerunectl launcher toggle"), { description = "Shell: App launcher" })
+hl.bind("SUPER + V", hl.dsp.exec_cmd("bluerunectl launcher clipboard"), { description = "Shell: Clipboard history" })
+hl.bind("SUPER + PERIOD", hl.dsp.exec_cmd("bluerunectl launcher emoji"), { description = "Shell: Emoji" })
 hl.bind("SUPER + N", hl.dsp.exec_cmd("bluerunectl quick toggle"), { description = "Shell: Quick settings" })
 hl.bind("SUPER + I", hl.dsp.exec_cmd("bluerunectl settings open"), { description = "Shell: Settings" })
 hl.bind("SUPER + J", hl.dsp.exec_cmd("bluerunectl bar toggle"), { description = "Shell: Toggle bar" })

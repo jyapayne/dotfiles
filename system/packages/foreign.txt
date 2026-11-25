@@ -1,13 +1,9 @@
-1password
 amf-amdgpu-pro
-antigravity
 archlinux-themes-sddm
 bluerune-git
 bluez-qt5
 cable
-claude-code
 criu-git
-cursor-bin
 drawio-desktop-bin
 ffuf
 gtk-engine-murrine
@@ -39,11 +35,9 @@ plymouth-theme-flame-git
 pwvucontrol
 quickemu-git
 sdb-bin
-slack-desktop
 snapper-gui-git
 spiderweb
 spiderweb-dolphin
-stremio
 teams-for-linux
 tock-bin
 ttf-ms-win11-auto
@@ -54,7 +48,6 @@ usbmon
 virtio-win
 vmware-host-modules-dkms-fix-git
 vmware-keymaps
-vmware-workstation
 wallust
 wordlists
 yay-bin

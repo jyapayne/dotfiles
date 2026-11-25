@@ -4,6 +4,199 @@
 -- `bluerunectl hypr status` says how to make Hyprland read it.
 bluerune_owned = "1"
 
+-- <bluerune:binds>
+-- Shortcuts changed in BlueRune's Settings. Don't edit this block: BlueRune rewrites it.
+-- plan: {"changes":[{"keys":{"mods":68,"key":"T"},"binds":[{"action":"(C,\"quickshell:wallpaperSelectorToggle\")","submap":"","description":"Shell: Change wallpaper","dispatcher":"global","flags":[],"to":"off","at":13},{"action":"(C,\"qs -c $qsConfig ipc call TEST_ALIVE || $HOME/.config/quickshell/$qsConfig/scripts/colors/switchwall.sh\",nil)","submap":"","description":"","dispatcher":"exec_cmd","flags":[],"to":"home","at":15}]}],"added":[]}
+do
+-- How BlueRune changes binds of the user's config from a file read after it. Found on
+-- Hyprland 0.57.2 (see fixtures/0.57.2/binds-lua.txt):
+--
+-- * `hl.unbind(keys)` takes every bind written with that text, whitespace and case aside,
+--   in every submap; `SUPER + SHIFT + 4` doesn't take `SHIFT + SUPER + 4`. So each way of
+--   writing a combo is unbound.
+-- * Lua can't list the binds, and `hyprctl binds` hides what a dispatcher was given. But a
+--   bind's action sits in the registry until the bind goes, so the actions an unbind took
+--   are the functions it took out of the registry.
+-- * An action is known again after the config is read anew by where it was written (a Lua
+--   function) and the values it holds (a dispatcher's arguments).
+-- * Binding an action again (`hl.bind(keys, fn, opts)`) works for any of them.
+--
+-- Running it again in the same Lua state changes nothing: what it bound and what it holds
+-- off are kept in `bluerune_binds`, and taken back first.
+local R = debug.getregistry()
+local MODS = { { 1, { "SHIFT" } }, { 2, { "CAPS" } }, { 4, { "CTRL", "CONTROL" } }, { 8, { "ALT", "MOD1" } }, { 16, { "MOD2" } }, { 32, { "MOD3" } }, { 64, { "SUPER", "WIN", "LOGO", "MOD4", "META" } }, { 128, { "MOD5" } } }
+
+local function print_value(v, depth)
+  local kind = type(v)
+  if kind == "string" then return (string.format("%q", v):gsub("\n", "n")) end
+  if kind == "number" or kind == "boolean" or kind == "nil" then return tostring(v) end
+  if kind == "function" then
+    if depth > 2 then return "fn" end
+    local info = debug.getinfo(v, "Su")
+    local parts = { info.what == "C" and "C" or (info.source .. ":" .. info.linedefined) }
+    for i = 1, info.nups do
+      local name, up = debug.getupvalue(v, i)
+      if name ~= "_ENV" then parts[#parts + 1] = print_value(up, depth + 1) end
+    end
+    return "(" .. table.concat(parts, ",") .. ")"
+  end
+  if kind == "table" and depth <= 2 then
+    local keys = {}
+    for k in pairs(v) do keys[#keys + 1] = k end
+    table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+    local parts = {}
+    for _, k in ipairs(keys) do parts[#parts + 1] = tostring(k) .. "=" .. print_value(v[k], depth + 1) end
+    return "{" .. table.concat(parts, ",") .. "}"
+  end
+  return kind
+end
+
+local function action_of(f) return print_value(f, 0) end
+
+local function spellings(mods, keys)
+  local out = {}
+  for _, mask in ipairs(mods) do
+    local lists = {}
+    for _, m in ipairs(MODS) do if mask & m[1] ~= 0 then lists[#lists + 1] = m[2] end end
+    local chosen, used = {}, {}
+    local function walk()
+      if #chosen == #lists then
+        for _, key in ipairs(keys) do
+          chosen[#chosen + 1] = key
+          out[#out + 1] = table.concat(chosen, "+")
+          chosen[#chosen] = nil
+        end
+        return
+      end
+      for i, names in ipairs(lists) do
+        if not used[i] then
+          used[i] = true
+          for _, name in ipairs(names) do
+            chosen[#chosen + 1] = name
+            walk()
+            chosen[#chosen] = nil
+          end
+          used[i] = false
+        end
+      end
+    end
+    walk()
+  end
+  return out
+end
+
+local function functions()
+  local found = {}
+  for k, v in pairs(R) do if math.type(k) == "integer" and type(v) == "function" then found[k] = v end end
+  return found
+end
+
+-- Unbinds every spelling of a combo and returns the actions that were bound to it.
+local function take(from)
+  local before = functions()
+  for _, spelled in ipairs(spellings(from.mods, from.keys)) do hl.unbind(spelled) end
+  local slots = {}
+  for k in pairs(before) do if type(R[k]) ~= "function" then slots[#slots + 1] = k end end
+  table.sort(slots)
+  local taken = {}
+  for _, k in ipairs(slots) do taken[#taken + 1] = { fn = before[k], action = action_of(before[k]) } end
+  return taken
+end
+
+function bluerune_apply_binds(plan)
+  local state = bluerune_binds or { placed = {}, held = {} }
+  bluerune_binds = state
+  local errors = {}
+  local function place(keys, fn, opts, submap)
+    local ok, bound = pcall(function()
+      if submap ~= nil and submap ~= "" then
+        local inside
+        hl.define_submap(submap, function() inside = hl.bind(keys, fn, opts) end)
+        return inside
+      end
+      return hl.bind(keys, fn, opts)
+    end)
+    if ok and bound ~= nil then return bound end
+    errors[#errors + 1] = keys .. ": " .. tostring(bound)
+  end
+  -- What an earlier run did, taken back.
+  local pool = {}
+  for _, placed in ipairs(state.placed) do
+    if placed.home then
+      local fn = R[tonumber(placed.bind.arg)]
+      if type(fn) == "function" then pool[#pool + 1] = { fn = fn, action = placed.action, home = placed.home } end
+    end
+    placed.bind:remove()
+  end
+  for _, held in ipairs(state.held) do pool[#pool + 1] = held end
+  state.placed, state.held = {}, {}
+  for _, change in ipairs(plan.changes) do
+    for _, taken in ipairs(take(change.from)) do
+      taken.home = { keys = change.home, opts = {}, submap = "" }
+      pool[#pool + 1] = taken
+    end
+  end
+  local function claim(wanted)
+    for _, entry in ipairs(pool) do
+      if not entry.claimed and entry.action == wanted then
+        entry.claimed = true
+        return entry
+      end
+    end
+  end
+  for _, change in ipairs(plan.changes) do
+    for _, bind in ipairs(change.binds) do
+      local entry = claim(bind.action)
+      if entry then
+        local home = { keys = change.home, opts = bind.opts, submap = bind.submap }
+        if bind.to == false then
+          state.held[#state.held + 1] = { fn = entry.fn, action = entry.action, home = home }
+        else
+          local bound = place(bind.to or change.home, entry.fn, bind.opts, bind.submap)
+          if bound then state.placed[#state.placed + 1] = { bind = bound, action = entry.action, home = home } end
+        end
+      end
+    end
+  end
+  -- An action no change claims goes back to where it came from.
+  for _, entry in ipairs(pool) do
+    if not entry.claimed then
+      local bound = place(entry.home.keys, entry.fn, entry.home.opts, entry.home.submap)
+      if bound then state.placed[#state.placed + 1] = { bind = bound, action = entry.action, home = entry.home } end
+    end
+  end
+  for _, added in ipairs(plan.added) do
+    local bound = place(added.keys, added.run, added.opts, "")
+    if bound then state.placed[#state.placed + 1] = { bind = bound } end
+  end
+  if #errors > 0 then error("BlueRune's shortcuts: " .. table.concat(errors, "; ")) end
+end
+bluerune_apply_binds({
+  changes = {
+    { from = { mods = { 68 }, keys = { "T" } }, home = "SUPER + CTRL + T", binds = {
+      { action = "(C,\"quickshell:wallpaperSelectorToggle\")", submap = "", to = false, opts = { description = "Shell: Change wallpaper" } },
+      { action = "(C,\"qs -c $qsConfig ipc call TEST_ALIVE || $HOME/.config/quickshell/$qsConfig/scripts/colors/switchwall.sh\",nil)", submap = "", opts = {  } },
+    } },
+  },
+  added = {
+  },
+})
+end
+-- </bluerune:binds>
+
+-- <bluerune:fonts>
+hl.config({
+    group = {
+        groupbar = {
+            font_family = "Inter",
+        },
+    },
+    misc = {
+        font_family = "Inter",
+    },
+})
+-- </bluerune:fonts>
+
 -- <bluerune:window-borders>
 hl.config({
     general = {

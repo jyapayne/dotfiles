@@ -3,11 +3,13 @@
 [appearance]
 mode = "dark"
 
+[bar]
+
 [bar.tray]
 pinned = ["Fcitx"]
 
 [notifications]
-senders = ["notify-send", "omp", "bluerune-settings.desktop"]
+senders = ["notify-send", "omp", "bluerune-settings.desktop", "Screenshots"]
 timeout = 7
 
 [display.night_light]
@@ -29,3 +31,6 @@ idle = "30m"
 [power.idle.ac]
 dim = "never"
 suspend = "45m"
+
+[screenshots]
+text_command = "/home/joey/.local/bin/indra-ocr {file} --format text --cores 4"

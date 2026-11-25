@@ -139,10 +139,10 @@ TerminalApplication=kitty -1
 XftHintStyle=hintslight
 XftSubPixel=none
 fixed=JetBrainsMono Nerd Font,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-font=Rubik,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-menuFont=Rubik,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-smallestReadableFont=Rubik,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-toolBarFont=Rubik,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+font=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+menuFont=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+smallestReadableFont=Inter,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+toolBarFont=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 AccentColor=67,146,247
 
 [Icons]
@@ -176,7 +176,7 @@ Theme=freedesktop
 [WM]
 activeBackground=50,53,60
 activeBlend=252,252,252
-activeFont=Rubik,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+activeFont=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 activeForeground=224,226,235
 inactiveBackground=47,71,111
 inactiveBlend=161,169,177
