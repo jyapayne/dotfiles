@@ -1,0 +1,9 @@
+[Unit]
+Description=Update Cursor IDE
+
+[Service]
+ExecStart=/opt/cursor/update-cursor.sh
+Type=oneshot
+
+[Install]
+WantedBy=default.target

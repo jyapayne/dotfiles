@@ -1,0 +1,12 @@
+[Unit]
+Description=Sunshine (KMS)
+After=graphical-session.target
+PartOf=graphical-session.target
+Conflicts=sunshine.service
+[Service]
+ExecStartPre=/bin/sleep 5
+ExecStart=/home/joey/Projects/sunlight/Sunshine/build/sunshine capture=kms system_tray=disabled
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=xdg-desktop-autostart.target

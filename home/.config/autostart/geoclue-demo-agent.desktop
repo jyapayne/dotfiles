@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name[ka]=Geoclue-ის დემო აგენტი
+Name[oc]=Agent de demonstracion geoclue
+Name=Geoclue Demo agent
+GenericName[ka]=Geoclue-ის სადემონსტრაციო აგენტი
+GenericName[oc]=Agent de demostracion geoclue
+GenericName=Demo geoclue agent
+Keywords[ka]=geolocation;გეოლოკაცია;
+Keywords[oc]=geolocalizacion;
+Keywords=geolocation;
+Exec=/usr/lib/geoclue-2.0/demos/agent
+Icon=mark-location-symbolic
+NotShowIn=GNOME;Hyprland;
+NoDisplay=true
+Terminal=false
+Type=Application

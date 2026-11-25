@@ -1,0 +1,11 @@
+[Desktop Entry]
+NotShowIn=Hyprland;
+Type=Application
+Name=SpiderWeb desktop host
+Comment=Shares this desktop with the SpiderWeb devices allowed to view or control it
+Exec=/usr/bin/spiderweb-desktop host --login
+Icon=preferences-system-network
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-phase=2
+X-SpiderWeb-Integration=system

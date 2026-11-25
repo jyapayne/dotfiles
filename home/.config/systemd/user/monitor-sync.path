@@ -1,0 +1,8 @@
+[Unit]
+Description=Watch monitors.conf for nwg-displays changes
+
+[Path]
+PathChanged=%h/.config/hypr/monitors.conf
+
+[Install]
+WantedBy=default.target

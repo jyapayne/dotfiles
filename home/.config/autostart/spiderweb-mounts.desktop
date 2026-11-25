@@ -1,0 +1,11 @@
+[Desktop Entry]
+NotShowIn=Hyprland;
+Type=Application
+Name=SpiderWeb mounts
+Comment=Mounts SpiderWeb exports again at login and unmounts them at logout
+Exec=/usr/bin/spiderweb-desktop mounts session
+NoDisplay=true
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-phase=2
+X-SpiderWeb-Integration=system

@@ -1,0 +1,6 @@
+[Unit]
+Description=Merge nwg-displays output into persistent monitor config
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/merge-monitors.sh

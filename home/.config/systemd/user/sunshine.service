@@ -1,0 +1,18 @@
+[Unit]
+Description=Sunshine (wlr)
+Conflicts=sunshine-kms.service
+# Intentionally NOT WantedBy=default.target / graphical-session.target.
+# This bare-Hyprland session does not activate graphical-session.target, and
+# starting at default.target races the compositor: the systemd user-manager
+# environment has no WAYLAND_DISPLAY yet, so wlr screencopy cannot connect and
+# capture init fails ("Unable to initialize capture method" / "Platform failed
+# to initialize"). Hyprland starts this via exec-once *after* it imports the
+# Wayland environment into the user manager (see hypr/hyprland/execs.conf),
+# mirroring how the cliphist watchers are launched.
+
+[Service]
+# capture method (wlr) comes from ~/.config/sunshine/sunshine.conf; wlr needs no
+# CAP_SYS_ADMIN, unlike kms, which matters for this frequently-rebuilt dev binary.
+ExecStart=/home/joey/Projects/sunlight/Sunshine/build/sunshine
+Restart=on-failure
+RestartSec=5s

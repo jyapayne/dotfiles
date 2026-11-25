@@ -1,0 +1,15 @@
+[Unit]
+Description=Cliphist image watcher
+After=graphical-session.target
+PartOf=graphical-session.target
+# Keep retrying through compositor outages instead of exhausting the start limit.
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -lc 'wl-paste --type image --watch timeout 10 cliphist store'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
