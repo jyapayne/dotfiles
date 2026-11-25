@@ -29,6 +29,7 @@
 .inputrc
 .pythonrc
 .pythonstartup
+.gitconfig
 .gdbinit
 bashscripts
 

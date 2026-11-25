@@ -134,7 +134,7 @@ export HISTTIMEFORMAT="%F %T "
 export BASH_SILENCE_DEPRECATION_WARNING=1
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 alias vim="nvim"
-export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)
+# export JAVA_HOME=$(/usr/libexec/java_home -v 16.0.1)
 
 export PATH="/Users/joey/Library/Python/3.9/bin:$PATH"
 export PATH="$HOME/.ghcup/bin/:$PATH"
@@ -143,8 +143,9 @@ export PATH="/usr/local/sbin:$PATH"
 export PATH="/opt/homebrew/bin:/opt/homebrew/lib:/opt/homebrew/include:$PATH"
 export PATH="/Users/joey/.local/bin:/usr/local/bin:$PATH"
 export PATH="/usr/local/opt/sqlite/bin:$PATH"
-export PATH="$HOME/Nim/bin:$HOME/.nimble/bin:$PATH"
-#export PATH="$HOME/.nimble/bin:$PATH"
+export PATH="$HOME/.nimble/bin:$PATH"
+export NIM_COMPILER_SOURCE="$(choosenim show path)"
+export NIM="$NIM_COMPILER_SOURCE/bin/nim"
 #export LDFLAGS="-L/usr/local/opt/sqlite/lib"
 #export CPPFLAGS="-I/usr/local/opt/sqlite/include"
 
@@ -163,10 +164,10 @@ test -r /Users/joey/.opam/opam-init/init.sh && . /Users/joey/.opam/opam-init/ini
 export PATH="/opt/homebrew/opt/sqlite/bin:$PATH"
 
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-export CPLUS_INCLUDE_PATH=$(llvm-config --includedir):/opt/homebrew/include:$CPLUS_INCLUDE_PATH
-export LD_LIBRARY_PATH=$(llvm-config --libdir):/opt/homebrew/lib:$LD_LIBRARY_PATH
-source $HOME/.ghcup/env
-source /usr/local/lib/bazel/bin/bazel-complete.bash
+# export CPLUS_INCLUDE_PATH=$(llvm-config --includedir):/opt/homebrew/include:$CPLUS_INCLUDE_PATH
+# export LD_LIBRARY_PATH=$(llvm-config --libdir):/opt/homebrew/lib:$LD_LIBRARY_PATH
+# source $HOME/.ghcup/env
+# source /usr/local/lib/bazel/bin/bazel-complete.bash
 export PATH="/opt/homebrew/opt/qt\@5/bin:$PATH"
 
 # export LDFLAGS="-L/opt/homebrew/opt/qt\@5/lib"
@@ -176,6 +177,34 @@ export PATH="/opt/homebrew/opt/qt\@5/bin:$PATH"
 export CMAKE_PREFIX_PATH=/opt/homebrew/Cellar/qt\@5/5.15.2
 alias sshkvm4g="ssh root@172.111.1.101"
 alias sshkvm2g="ssh root@172.111.1.102"
-. "$HOME/.cargo/env"
 
 [ -f "/Users/joey/.ghcup/env" ] && source "/Users/joey/.ghcup/env" # ghcup-env
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/joey/.lmstudio/bin"
+# End of LM Studio CLI section
+
+export LIBVIRT_DEFAULT_URI=qemu:///system
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/joey/.miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/joey/.miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/joey/.miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/joey/.miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# Rustup selects the project's toolchain; expose Cargo-installed devtools too.
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+# Enable programmable sdb completion features.
+if [ -f ~/.sdb/.sdb-completion.bash ]; then
+ source ~/.sdb/.sdb-completion.bash
+fi

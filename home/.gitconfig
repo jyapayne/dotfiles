@@ -3,10 +3,12 @@
 # Please adapt and uncomment the following lines:
 	name = Joey Yakimowich-Payne
 	email = jyapayne@pm.me
+	signingkey = /home/joey/.ssh/id_ed25519.pub
 [core]
 	editor = nvim
 	autocrlf = input
 	compression = 9
+	pager = delta
 [pull]
 	rebase = false
 [color]
@@ -26,3 +28,24 @@
 	gpgsign = true
 [init]
 	defaultBranch = master
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[interactive]
+	diffFilter = delta --color-only
+[merge]
+	conflictStyle = zdiff3
+[delta]
+	navigate = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = /home/joey/.ssh/allowed_signers
