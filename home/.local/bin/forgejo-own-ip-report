@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Tells git.joeypayne.com this machine's current public IPv4 address (home, VPN exit,
+# travel) so its rate limits and JavaScript challenge don't apply to it. The server keeps
+# the home address plus the newest few reported; see /usr/local/sbin/forgejo-own-ip there.
+# Run by forgejo-own-ip-report.timer; only contacts the server when the address changed.
+set -euo pipefail
+state=${XDG_STATE_HOME:-$HOME/.local/state}/forgejo-own-ip
+mkdir -p "$state"
+ip=$(curl -fsS -4 --max-time 10 https://ifconfig.me || curl -fsS -4 --max-time 10 https://api.ipify.org) || exit 0
+[[ $ip =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]] || exit 0
+[[ $(cat "$state/last" 2>/dev/null) == "$ip" ]] && exit 0
+ssh -o BatchMode=yes -o ConnectTimeout=10 forgejovaultwarden "sudo -n /usr/local/sbin/forgejo-own-ip allow $ip"
+printf '%s\n' "$ip" > "$state/last"

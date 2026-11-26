@@ -9,12 +9,12 @@ cups.service
 cups.socket
 docker.service
 getty@.service
+greetd.service
 iwd.service
 mnt-backup\x2ddrive.mount
 power-profiles-daemon.service
 proton.VPN.service
 remote-fs.target
-sddm.service
 snapper-cleanup.timer
 snapper-timeline.timer
 spiderweb-boot-agent.service

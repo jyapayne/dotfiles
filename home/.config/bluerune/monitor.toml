@@ -1,0 +1,5 @@
+interval_ms = 1000
+sort = "name"
+descending = false
+tree = false
+kernel_threads = false

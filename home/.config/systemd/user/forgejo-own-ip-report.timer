@@ -1,0 +1,9 @@
+[Unit]
+Description=Keep git.joeypayne.com's allowlist on this machine's current address
+
+[Timer]
+OnStartupSec=30s
+OnUnitActiveSec=2min
+
+[Install]
+WantedBy=timers.target

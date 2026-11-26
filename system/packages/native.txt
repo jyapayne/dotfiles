@@ -5,6 +5,7 @@ android-tools
 antiword
 apostrophe
 appstream-glib
+archiso
 ark
 arm-none-eabi-binutils
 arm-none-eabi-gcc
@@ -26,6 +27,7 @@ code
 cups
 cups-pdf
 debuginfod
+devtools
 dhcpcd
 direnv
 discord
@@ -63,6 +65,7 @@ gparted
 gperf
 gradle
 graphviz
+greetd
 gst-plugin-pipewire
 gtk4-layer-shell
 gum
@@ -86,6 +89,7 @@ libntfs-3g
 libreoffice-fresh
 libspng
 libva-utils
+limine
 linux
 linux-firmware
 linux-headers
@@ -165,6 +169,7 @@ snapper
 socat
 sof-firmware
 speech-dispatcher
+squashfs-tools
 steam
 strace
 sway

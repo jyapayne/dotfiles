@@ -1,0 +1,7 @@
+[Unit]
+Description=Report this machine's public address to git.joeypayne.com's rate-limit allowlist
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/forgejo-own-ip-report

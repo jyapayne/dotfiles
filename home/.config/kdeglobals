@@ -133,6 +133,7 @@ ForegroundPositive=59,164,97
 ForegroundVisited=142,138,207
 
 [General]
+AccentColor=67,146,247
 ColorScheme=BlueRune
 ColorSchemeHash=54e482a59f463df89e9dac6b1633925b70b4fb8c
 TerminalApplication=kitty -1
@@ -143,10 +144,9 @@ font=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 menuFont=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 smallestReadableFont=Inter,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 toolBarFont=Inter,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-AccentColor=67,146,247
 
 [Icons]
-Theme=breeze-plus-dark
+Theme=breeze-dark
 
 [KFileDialog Settings]
 Allow Expansion=false
@@ -171,7 +171,7 @@ EnableRemoteFolderThumbnail=false
 MaximumRemoteSize=0
 
 [Sounds]
-Theme=freedesktop
+Theme=bluerune
 
 [WM]
 activeBackground=50,53,60
@@ -181,3 +181,6 @@ activeForeground=224,226,235
 inactiveBackground=47,71,111
 inactiveBlend=161,169,177
 inactiveForeground=158,182,228
+
+[UiSettings]
+ColorScheme=BlueRune

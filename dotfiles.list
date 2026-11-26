@@ -103,6 +103,7 @@ bashscripts
 
 # Restored by `dot deploy` only when you agree (it asks before using sudo).
 .local/bin/indra-text
+.local/bin/forgejo-own-ip-report
 [system]
 @snapshot
 /etc/sddm.conf

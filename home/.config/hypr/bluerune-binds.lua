@@ -76,8 +76,16 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("bluerunectl brightness down"),
 -- leaves every other Super bind working.
 for _, key in ipairs({ "SUPER_L", "SUPER_R" }) do
     hl.bind(key, hl.dsp.exec_cmd("bluerunectl super down"), { ignore_mods = true, transparent = true })
-    hl.bind(key, hl.dsp.exec_cmd("bluerunectl super up"), { ignore_mods = true, transparent = true, release = true })
+    hl.bind(key, hl.dsp.exec_cmd("bluerunectl super up"), { ignore_mods = true, transparent = true, release = true, locked = true, dont_inhibit = true })
 end
+-- Hyprland skips a release bind when another key was pressed while it was held, so after a
+-- quick Super+D the release above never fires. Every key event still reaches this handler:
+-- Super's release (keycodes 133 and 134, Super_L and Super_R) always tells the shell.
+hl.on("input.keyboard.key", function(keycode, _, state)
+    if state == 0 and (keycode == 133 or keycode == 134) then
+        hl.dispatch(hl.dsp.exec_cmd("bluerunectl super up"))
+    end
+end)
 
 -- Surfaces ---------------------------------------------------------------------------------
 

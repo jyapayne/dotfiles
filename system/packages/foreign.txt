@@ -1,4 +1,5 @@
 amf-amdgpu-pro
+antigravity-cli
 archlinux-themes-sddm
 bluerune-git
 bluez-qt5
@@ -39,6 +40,7 @@ snapper-gui-git
 spiderweb
 spiderweb-dolphin
 teams-for-linux
+telegram-desktop-bin
 tock-bin
 ttf-ms-win11-auto
 ttf-victor-mono

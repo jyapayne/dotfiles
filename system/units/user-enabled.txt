@@ -1,5 +1,6 @@
 cliphist-image.service
 cliphist-text.service
+forgejo-own-ip-report.timer
 gnome-keyring-daemon.socket
 hypridle.service
 monitor-sync.path

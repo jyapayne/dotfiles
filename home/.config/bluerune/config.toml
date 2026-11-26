@@ -6,10 +6,10 @@ mode = "dark"
 [bar]
 
 [bar.tray]
-pinned = ["Fcitx"]
+pinned = ["Fcitx", "Steam", "SpiderWeb", "TelegramDesktop", "qBittorrent", "Proton VPN", "Microsoft Teams", "Microsoft Teams (1)", "Microsoft Teams (2)"]
 
 [notifications]
-senders = ["notify-send", "omp", "bluerune-settings.desktop", "Screenshots"]
+senders = ["notify-send", "omp", "bluerune-settings.desktop", "Screenshots", "org.kde.kded6.desktop", "bluerune.desktop", "org.telegram.desktop", "org.qbittorrent.qBittorrent.desktop", "firefox-developer-edition.desktop", "ps5upload-desktop"]
 timeout = 7
 
 [display.night_light]
@@ -22,7 +22,7 @@ picture = "/home/joey/Pictures/wallpapers/blue-forest.jpg"
 enabled = true
 
 [dock]
-pinned = ["firefox-developer-edition", "parsecd"]
+pinned = ["firefox-developer-edition"]
 reveal_at_edge = false
 
 [lock]
@@ -37,3 +37,6 @@ text_command = "/home/joey/.local/bin/indra-text {file} --cores 4"
 
 [login]
 take_over = true
+
+[workspace]
+animation_speed = 1.5

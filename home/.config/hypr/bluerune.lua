@@ -4,6 +4,31 @@
 -- `bluerunectl hypr status` says how to make Hyprland read it.
 bluerune_owned = "1"
 
+-- <bluerune:animations>
+-- Animations set in BlueRune's Settings. Don't edit this block: BlueRune rewrites it.
+-- animations: {"curves":[],"own":{},"was":{"border":{"enabled":true,"speed":10.0,"curve":"emphasizedDecel","style":""},"borderangle":{"enabled":false,"speed":1.0,"curve":"default","style":""},"fade":{"enabled":true,"speed":2.5,"curve":"bluerune","style":""},"fadeIn":{"enabled":true,"speed":3.0,"curve":"emphasizedDecel","style":""},"fadeLayersIn":{"enabled":true,"speed":0.5,"curve":"menu_decel","style":""},"fadeLayersOut":{"enabled":true,"speed":2.7,"curve":"stall","style":""},"fadeOut":{"enabled":true,"speed":2.0,"curve":"emphasizedDecel","style":""},"global":{"enabled":true,"speed":8.0,"curve":"default","style":""},"glowangle":{"enabled":false,"speed":1.0,"curve":"default","style":""},"layersIn":{"enabled":true,"speed":2.7,"curve":"emphasizedDecel","style":"popin 93%"},"layersOut":{"enabled":true,"speed":2.4,"curve":"menu_accel","style":"popin 94%"},"shadowangle":{"enabled":false,"speed":1.0,"curve":"default","style":""},"specialWorkspaceIn":{"enabled":true,"speed":2.8,"curve":"emphasizedDecel","style":"slidevert"},"specialWorkspaceOut":{"enabled":true,"speed":1.2,"curve":"emphasizedAccel","style":"slidevert"},"windows":{"enabled":true,"speed":3.0,"curve":"bluerune","style":"popin 90%"},"windowsIn":{"enabled":true,"speed":3.0,"curve":"emphasizedDecel","style":"popin 80%"},"windowsMove":{"enabled":true,"speed":3.0,"curve":"emphasizedDecel","style":"slide"},"windowsOut":{"enabled":true,"speed":2.0,"curve":"emphasizedDecel","style":"popin 90%"},"workspaces":{"enabled":true,"speed":2.5,"curve":"bluerune","style":"slide"},"zoomFactor":{"enabled":true,"speed":3.0,"curve":"standardDecel","style":""}},"speed":1.5}
+hl.animation({ leaf = "global", enabled = true, speed = 5.333, bezier = "default" })
+hl.animation({ leaf = "border", enabled = true, speed = 6.667, bezier = "emphasizedDecel" })
+hl.animation({ leaf = "borderangle", enabled = false })
+hl.animation({ leaf = "fade", enabled = true, speed = 1.667, bezier = "bluerune" })
+hl.animation({ leaf = "glowangle", enabled = false })
+hl.animation({ leaf = "shadowangle", enabled = false })
+hl.animation({ leaf = "windows", enabled = true, speed = 2, bezier = "bluerune", style = "popin 90%" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 1.667, bezier = "bluerune", style = "slide" })
+hl.animation({ leaf = "zoomFactor", enabled = true, speed = 2, bezier = "standardDecel" })
+hl.animation({ leaf = "fadeIn", enabled = true, speed = 2, bezier = "emphasizedDecel" })
+hl.animation({ leaf = "fadeOut", enabled = true, speed = 1.333, bezier = "emphasizedDecel" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 1.8, bezier = "emphasizedDecel", style = "popin 93%" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 1.6, bezier = "menu_accel", style = "popin 94%" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 2, bezier = "emphasizedDecel", style = "popin 80%" })
+hl.animation({ leaf = "windowsMove", enabled = true, speed = 2, bezier = "emphasizedDecel", style = "slide" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.333, bezier = "emphasizedDecel", style = "popin 90%" })
+hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 0.333, bezier = "menu_decel" })
+hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.8, bezier = "stall" })
+hl.animation({ leaf = "specialWorkspaceIn", enabled = true, speed = 1.867, bezier = "emphasizedDecel", style = "slidevert" })
+hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 0.8, bezier = "emphasizedAccel", style = "slidevert" })
+-- </bluerune:animations>
+
 -- <bluerune:binds>
 -- Shortcuts changed in BlueRune's Settings. Don't edit this block: BlueRune rewrites it.
 -- plan: {"changes":[{"keys":{"mods":68,"key":"T"},"binds":[{"action":"(C,\"quickshell:wallpaperSelectorToggle\")","submap":"","description":"Shell: Change wallpaper","dispatcher":"global","flags":[],"to":"off","at":13},{"action":"(C,\"qs -c $qsConfig ipc call TEST_ALIVE || $HOME/.config/quickshell/$qsConfig/scripts/colors/switchwall.sh\",nil)","submap":"","description":"","dispatcher":"exec_cmd","flags":[],"to":"home","at":15}]}],"added":[]}
