@@ -24,3 +24,9 @@ hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd("systemctl --user restart bluerune.s
 if is_file_exists(HOME .. "/.config/hypr/bluerune.lua") then
     require("bluerune")
 end
+
+-- BlueRune Files answers "Show in folder" (org.freedesktop.FileManager1) ahead of Dolphin.
+-- The BlueRune session target does this itself; this session doesn't run that target.
+hl.on("hyprland.start", function()
+    hl.exec_cmd("systemctl --user start bluerune-file-manager.service")
+end)
