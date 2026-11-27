@@ -2,7 +2,6 @@
 
 [appearance]
 mode = "dark"
-icon_theme = ""
 
 [bar]
 
@@ -10,7 +9,7 @@ icon_theme = ""
 pinned = ["Fcitx", "Steam", "SpiderWeb", "TelegramDesktop", "qBittorrent", "Proton VPN", "Microsoft Teams", "Microsoft Teams (1)", "Microsoft Teams (2)"]
 
 [notifications]
-senders = ["notify-send", "omp", "bluerune-settings.desktop", "Screenshots", "org.kde.kded6.desktop", "bluerune.desktop", "org.telegram.desktop", "org.qbittorrent.qBittorrent.desktop", "firefox-developer-edition.desktop", "ps5upload-desktop"]
+senders = ["notify-send", "omp", "bluerune-settings.desktop", "Screenshots", "org.kde.kded6.desktop", "bluerune.desktop", "org.telegram.desktop", "org.qbittorrent.qBittorrent.desktop", "firefox-developer-edition.desktop", "ps5upload-desktop", "blueman"]
 timeout = 7
 
 [display.night_light]
@@ -41,3 +40,9 @@ take_over = true
 
 [workspace]
 animation_speed = 1.5
+
+[fonts]
+clock_weight = 700
+
+[sounds]
+theme = "bluerune-retro"

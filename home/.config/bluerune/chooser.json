@@ -1,0 +1,13 @@
+{
+  "mode": "list",
+  "sort": {
+    "by": "modified",
+    "descending": true,
+    "folders_first": true,
+    "hidden_last": false,
+    "natural": true,
+    "case_sensitive": false
+  },
+  "show_hidden": false,
+  "open_with": "double"
+}

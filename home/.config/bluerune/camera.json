@@ -1,0 +1,23 @@
+{
+  "camera": "Logitech StreamCam (V4L2)",
+  "wishes": {
+    "Logitech StreamCam (V4L2)": {
+      "size": [
+        1920,
+        1080
+      ],
+      "rate": {
+        "num": 30,
+        "den": 1
+      }
+    }
+  },
+  "mirrored": {},
+  "capture": "Photo",
+  "timer": 0,
+  "burst": false,
+  "shutter_sound": true,
+  "flash": true,
+  "sound": "Default",
+  "format": null
+}
