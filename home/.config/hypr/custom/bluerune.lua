@@ -25,8 +25,9 @@ if is_file_exists(HOME .. "/.config/hypr/bluerune.lua") then
     require("bluerune")
 end
 
--- BlueRune Files answers "Show in folder" (org.freedesktop.FileManager1) ahead of Dolphin.
+-- BlueRune Files answers "Show in folder" (org.freedesktop.FileManager1) ahead of Dolphin, and
+-- Clocks' service rings alarms and timers with its window closed.
 -- The BlueRune session target does this itself; this session doesn't run that target.
 hl.on("hyprland.start", function()
-    hl.exec_cmd("systemctl --user start bluerune-file-manager.service")
+    hl.exec_cmd("systemctl --user start bluerune-file-manager.service bluerune-clocks.service")
 end)

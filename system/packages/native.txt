@@ -6,6 +6,8 @@ antiword
 apostrophe
 appstream-glib
 archiso
+archlinux-appstream-data
+archlinux-xdg-menu
 ark
 arm-none-eabi-binutils
 arm-none-eabi-gcc
@@ -18,12 +20,15 @@ base-devel
 bind
 blueman
 bluez
+bluez-obex
 bluez-utils
+bolt
 btop
 btrfs-progs
 cabextract
 cloc
 code
+colord
 cups
 cups-pdf
 debuginfod
@@ -49,6 +54,7 @@ firefox-developer-edition
 firefox-ublock-origin
 foliate
 font-manager
+fwupd
 fzf
 gdb
 git
@@ -58,6 +64,7 @@ github-cli
 glib2-devel
 glow
 gnome-system-monitor
+gnome-themes-extra
 gnome-tweaks
 gobuster
 godot-mono
@@ -133,6 +140,7 @@ odt2txt
 openbox
 openvpn
 otf-font-awesome
+packagekit
 packer
 pacman-contrib
 pamixer
@@ -163,6 +171,7 @@ rlwrap
 rofi
 ruby-getoptlong
 rust-analyzer
+satty
 sddm
 smartmontools
 snapper

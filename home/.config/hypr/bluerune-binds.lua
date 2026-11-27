@@ -116,3 +116,5 @@ hl.animation({ leaf = "workspaces", enabled = true, speed = 2.5, bezier = "bluer
 -- match" (on by default) keeps the focused window's border in the accent and the others
 -- in a quiet grey, light or dark with the shell, in the same file. To use your own border
 -- colours, turn it off, or set `general.col.active_border` after `require("bluerune")`.
+
+hl.bind("SUPER + SHIFT + PERIOD", hl.dsp.exec_cmd("bluerunectl launcher characters"), { description = "Shell: Character picker" })

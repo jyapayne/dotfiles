@@ -2,6 +2,7 @@
 
 [appearance]
 mode = "dark"
+icon_theme = ""
 
 [bar]
 
